@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Early Transition Skills – AAC / ARASAAC Edition</title>
+<style>
+/* ── FONTS ──
+   Android Chrome does not ship Comic Sans MS.
+   'Arial Rounded MT Bold' → Arial Bold renders clean and student-friendly
+   on every platform including Galaxy Note.
+   Vietnamese stays on plain Arial to preserve diacritics.
+*/
+body.lang-vi,
+body.lang-vi button,
+body.lang-vi input,
+body.lang-vi select,
+body.lang-vi span,
+body.lang-vi div,
+body.lang-vi h1,
+body.lang-vi h2,
+body.lang-vi p {
+  font-family: Arial, 'Helvetica Neue', sans-serif !important;
+}
+
+/* ══════════════ DESIGN TOKENS ══════════════ */
+:root {
+  --uco-blue:   #002D62;
+  --uco-bronze: #C8970A;
+  --red:        #b91c3f;  --red-bg:    #fde8ef;
+  --yellow:     #a36200;  --yel-bg:    #fffbea;
+  --blue:       #1a4fa0;  --blue-bg:   #e8f0fd;
+  --teal:       #0b6b60;  --teal-bg:   #e0f7f4;
+  --purple:     #5a1d8a;  --purp-bg:   #f0e8ff;
+  --green:      #155a22;  --grn-bg:    #e6f4e9;
+  --orange:     #a83d00;  --org-bg:    #fff0e6;
+  --dark:       #0f172a;
+  --radius:     14px;
+  --sym-sz:     108px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body{
+  font-family: 'Arial Rounded MT Bold', 'Varela Round', Arial, sans-serif;
+  font-weight: 800;
+  background: #94a3b8;
+  color: var(--dark);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0; }
+
+/* ══════════════ TOOLBAR ══════════════ */
+.toolbar {
+  background: var(--uco-blue);
+  color: #fff;
+  padding: 6px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  box-shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.toolbar-title {
+  font-size: .88rem;
+  font-weight: 900;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.toolbar-badge {
+  background: var(--uco-bronze);
+  color: #fff;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: .72rem;
+  font-weight: 900;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* student switcher */
+.stu-switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 4px 10px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.stu-label { font-size:.8rem;font-weight:900;color:#FFD700;white-space:nowrap; }
+#stu-select {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:800;
+  background:#fff;color:var(--dark);border:2px solid #aaa;border-radius:8px;
+  padding:3px 8px;min-height:32px;flex:1;min-width:80px;max-width:200px;cursor:pointer;
+}
+#stu-select:focus { outline: 2px solid #FFD700; }
+.stu-btn {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.78rem;font-weight:900;
+  border-radius:8px;padding:3px 10px;cursor:pointer;min-height:32px;
+  white-space:nowrap;border:2px solid rgba(255,255,255,.35);
+}
+.stu-add  { background:#155a22;color:#fff; }
+.stu-add:hover  { background:#0e3d16; }
+.stu-ren  { background:rgba(255,255,255,.15);color:#fff; }
+.stu-ren:hover  { background:rgba(255,255,255,.28); }
+.stu-del  { background:#b91c3f;color:#fff; }
+.stu-del:hover  { background:#7b1025; }
+
+/* toolbar action buttons */
+.tb-btn {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.8rem;font-weight:900;
+  border-radius:8px;padding:4px 11px;cursor:pointer;min-height:32px;
+  white-space:nowrap;border:2px solid rgba(255,255,255,.35);
+  flex-shrink: 0;
+}
+.tb-speech { background:rgba(255,255,255,.12);color:#fff; }
+.tb-speech[aria-pressed="true"] { background:#155a22;border-color:#4caf50; }
+.tb-photos { background:rgba(255,255,255,.12);color:#fff; }
+.tb-photos:hover { background:rgba(255,255,255,.24); }
+.tb-print  { background:#0b6b60;color:#fff; }
+.tb-print:hover { background:#085248; }
+
+/* language toggle */
+.lang-toggle {
+  display:flex;align-items:center;gap:0;
+  background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden;
+  border:2px solid rgba(255,255,255,.35);flex-shrink:0;
+}
+.lang-btn {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.78rem;font-weight:900;
+  padding:3px 10px;cursor:pointer;min-height:32px;border:none;
+  background:transparent;color:rgba(255,255,255,.65);transition:background .12s,color .12s;
+}
+.lang-btn.active { background:#fff;color:var(--uco-blue); }
+.lang-btn:hover:not(.active) { background:rgba(255,255,255,.2);color:#fff; }
+
+@media print { .toolbar { display:none!important; } }
+
+/* ══════════════ PAGE CHROME ══════════════ */
+.page {
+  width:100%;max-width:8.5in;min-height:11in;
+  margin:20px auto;background:#fff;
+  box-shadow:0 6px 28px rgba(0,0,0,.22);
+  display:flex;flex-direction:column;
+  page-break-after:always;page-break-inside:avoid;
+  overflow:visible;
+  position:relative;
+}
+@media print {
+  .page { width:8.5in;min-height:11in;margin:0;box-shadow:none;overflow:hidden; }
+}
+
+/* cover banner on screen */
+.stu-banner {
+  background: var(--uco-blue);
+  color: #fff;
+  text-align: center;
+  padding: 7px 16px;
+  font-family: 'Arial Rounded MT Bold', 'Varela Round', Arial, sans-serif;
+  font-size: 1.25rem;
+  border-bottom: 3px solid var(--dark);
+  flex-shrink: 0;
+}
+/* printed student name strip */
+.print-stu-name {
+  display:none;
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;
+  color:var(--uco-blue);text-align:right;padding:4px 12px;
+  border-bottom:2px solid #eee;flex-shrink:0;
+}
+@media print {
+  .print-stu-name { display:block!important; }
+  .stu-banner     { display:none!important; }
+}
+
+/* ══════════════ ROUTING ══════════════ */
+#aac-cover { display:flex;flex-direction:column; }
+#aac-cover.hidden { display:none; }
+.section-page { display:none; }
+.section-page.active { display:block;width:100%; }
+@media print {
+  #aac-cover { display:none!important; }
+  .section-page { display:block!important; }
+  .section-page .page { display:flex!important; }
+}
+#aac-cover, .section-page { animation:fadein .14s ease; }
+@keyframes fadein { from{opacity:0} to{opacity:1} }
+
+/* ══════════════ COVER ══════════════ */
+.pg-cover { background:var(--teal); }
+.cover-head {
+  background: #FFD700;
+  text-align:center;padding:18px 30px 14px;
+  border-bottom:6px solid var(--dark);
+}
+.cover-head h1 {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:2.8rem;
+  color:var(--dark);line-height:1.05;
+}
+.edition-badge {
+  display:inline-block;background:var(--teal);color:#fff;
+  border-radius:20px;padding:3px 18px;font-size:1rem;font-weight:900;margin-top:5px;
+}
+.cover-sub {
+  background:var(--uco-blue);text-align:center;padding:10px;
+  border-bottom:6px solid var(--dark);
+}
+.cover-sub h2 { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:2rem;color:#fff; }
+.cover-grid {
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:8px;padding:10px;background:var(--dark);flex:1;
+}
+.cover-cell {
+  background:#0a5e54;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:10px 6px;cursor:pointer;
+  border:4px solid transparent;
+  transition:border-color .15s,background .12s,transform .12s;
+  position:relative;
+}
+.cover-cell:hover,.cover-cell:focus-visible {
+  background:#074d43;border-color:#FFD700;transform:scale(1.04);outline:none;
+}
+.cc-emoji { font-size:2.5rem; }
+.cc-lbl { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1.15rem;color:#fff;text-align:center; }
+.cc-tap { font-size:.78rem;color:rgba(255,255,255,.6);font-weight:800; }
+.prog-badge {
+  position:absolute;top:6px;right:6px;
+  background:#155a22;color:#fff;border-radius:20px;
+  padding:2px 8px;font-size:.7rem;font-weight:900;pointer-events:none;
+}
+.cover-foot {
+  background:var(--dark);text-align:center;
+  padding:8px 16px 10px;color:#e5e7eb;
+  font-size:.7rem;font-weight:700;flex-shrink:0;line-height:1.65;
+}
+.cc-gold { color:#FFD700;font-weight:900; }
+.cc-lic {
+  display:inline-flex;align-items:center;gap:5px;margin-top:3px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  border-radius:6px;padding:2px 10px;color:#d1d5db;font-size:.66rem;
+}
+
+/* ══════════════ SECTION PAGES ══════════════ */
+.back-bar {
+  background:var(--dark);display:flex;align-items:center;
+  gap:14px;padding:9px 18px;flex-shrink:0;
+}
+.back-btn {
+  background:#FFD700;color:var(--dark);border:3px solid var(--dark);
+  border-radius:10px;padding:7px 18px;
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;font-weight:900;
+  cursor:pointer;min-height:44px;
+}
+.back-btn:hover { outline:3px solid #fff; }
+.sec-indicator { color:#fff;font-size:1rem;font-weight:900; }
+
+.inner {
+  flex:1;padding:.35in .4in .3in;
+  display:flex;flex-direction:column;gap:10px;
+  overflow:hidden;min-height:0;
+}
+.page-title { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:2rem;line-height:1.1;flex-shrink:0; }
+.page-prompt { font-size:1.12rem;font-weight:900;line-height:1.4;flex-shrink:0; }
+
+/* search row */
+.search-row { display:flex;gap:8px;align-items:center;flex-shrink:0; }
+.sym-search {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;font-weight:800;
+  padding:8px 14px;border:2.5px solid #767676;border-radius:10px;
+  flex:1;min-height:42px;
+}
+.sym-search:focus { border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(26,79,160,.25); }
+.search-btn {
+  background:var(--blue);color:#fff;border:none;border-radius:10px;
+  padding:8px 16px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;font-weight:900;
+  cursor:pointer;min-height:42px;
+}
+.search-btn:hover { background:#1244a0; }
+.clear-btn {
+  background:#fff;border:3px solid #767676;border-radius:10px;
+  padding:6px 14px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.92rem;font-weight:900;
+  color:var(--dark);cursor:pointer;min-height:42px;flex-shrink:0;
+}
+.clear-btn:hover { background:#f0f0f0; }
+.search-status { font-size:.82rem;color:#666;font-weight:700;flex-shrink:0;text-align:center; }
+
+/* symbol bank */
+.sym-bank {
+  background:#f5f5f5;border:3px solid #767676;border-radius:var(--radius);
+  padding:10px 12px;flex-shrink:0;
+}
+.bank-label { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1.05rem;color:#444;margin-bottom:8px; }
+.bank-scroll { max-height:210px;overflow-y:auto;overflow-x:hidden; }
+.bank-row { display:flex;flex-wrap:wrap;gap:8px;min-height:50px; }
+
+/* symbol card */
+.sym {
+  width:var(--sym-sz);min-height:var(--sym-sz);
+  background:#fff;border:3px solid #555;border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:grab;padding:6px 4px;
+  transition:transform .12s,box-shadow .12s,opacity .12s;
+  touch-action:none;position:relative;
+}
+.sym:hover { transform:scale(1.07);box-shadow:0 4px 16px rgba(0,0,0,.2); }
+.sym.dragging { opacity:.35; }
+.sym.used { opacity:.3;pointer-events:none;border-style:dashed; }
+.sym img { width:70px;height:70px;object-fit:contain;display:block; }
+.sym .img-ph { width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-size:2.5rem; }
+.sym .s-word { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.76rem;color:var(--dark);text-align:center;line-height:1.2;padding:0 2px; }
+
+.sym.cat-feel   { border-color:var(--red);   background:var(--red-bg); }
+.sym.cat-people { border-color:var(--blue);  background:var(--blue-bg); }
+.sym.cat-place  { border-color:var(--green); background:var(--grn-bg); }
+.sym.cat-food   { border-color:var(--orange);background:var(--org-bg); }
+.sym.cat-action { border-color:var(--teal);  background:var(--teal-bg); }
+.sym.cat-thing  { border-color:var(--purple);background:var(--purp-bg); }
+.sym.cat-time   { border-color:var(--yellow);background:var(--yel-bg); }
+.sym.cat-jobs   { border-color:var(--uco-blue);background:#e8f0fd; }
+
+/* answer area */
+.answer-area { flex:1;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden; }
+.answer-grid { display:grid;gap:8px;flex:1;min-height:0;align-content:start; }
+.answer-grid.cols-2 { grid-template-columns:1fr 1fr; }
+.answer-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+
+/* drop zone */
+.drop-zone {
+  background:rgba(255,255,255,.6);border:3px dashed #aaa;border-radius:var(--radius);
+  padding:8px 10px;display:flex;flex-direction:column;align-items:center;
+  gap:6px;min-height:150px;transition:background .15s,border-color .15s;
+}
+.drop-zone.drag-over { background:#e8f5e9;border-color:var(--green);border-style:solid;box-shadow:0 0 0 4px rgba(21,90,34,.2); }
+.dz-lbl { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;color:#555;text-align:center;flex-shrink:0;width:100%; }
+.dz-ph  { font-size:.8rem;font-weight:700;color:#bbb;text-align:center; }
+.dz-cards { display:flex;flex-wrap:wrap;gap:5px;justify-content:center;width:100%; }
+
+.dz-red    { border-color:var(--red); }
+.dz-blue   { border-color:var(--blue); }
+.dz-green  { border-color:var(--green); }
+.dz-teal   { border-color:var(--teal); }
+.dz-orange { border-color:var(--orange); }
+.dz-purple { border-color:var(--purple); }
+.dz-yellow { border-color:var(--yellow); }
+
+/* dropped card */
+.dropped {
+  background:#fff;border:2.5px solid #555;border-radius:10px;
+  padding:5px 6px;display:flex;flex-direction:column;align-items:center;
+  gap:2px;min-width:70px;position:relative;
+}
+.dropped img { width:50px;height:50px;object-fit:contain; }
+.dropped .d-word { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.68rem;color:var(--dark);text-align:center; }
+.dropped .d-em   { font-size:1.9rem;line-height:1; }
+.d-remove {
+  position:absolute;top:-8px;right:-8px;
+  background:var(--red);color:#fff;border-radius:50%;
+  width:20px;height:20px;font-size:.72rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:2px solid #fff;line-height:1;
+}
+.d-remove:hover { background:#7b1025; }
+
+/* ARASAAC credit bar */
+.arasaac-bar {
+  background:#f0f0f0;border-top:2px solid #ccc;
+  padding:4px 12px;font-size:.63rem;font-weight:700;color:#555;
+  text-align:center;flex-shrink:0;
+}
+
+/* page colour themes */
+.pg-str  { background:var(--red-bg); }  .pg-str  .page-title { color:var(--red); }
+.pg-sup  { background:var(--blue-bg); } .pg-sup  .page-title { color:var(--blue); }
+.pg-pref { background:#fff; }           .pg-pref .page-title { color:var(--purple); }
+.pg-me   { background:var(--teal-bg); } .pg-me   .page-title { color:var(--teal); }
+.pg-iep  { background:var(--blue-bg); } .pg-iep  .page-title { color:var(--blue); }
+.pg-goal { background:var(--yel-bg); }  .pg-goal .page-title { color:var(--yellow); }
+.pg-comm { background:#fff; }           .pg-comm .page-title { color:var(--teal); }
+.pg-food { background:var(--org-bg); }  .pg-food .page-title { color:var(--orange); }
+.pg-dream{ background:var(--yel-bg); }  .pg-dream.page-title { color:var(--orange); }
+
+/* ══════════════ FERPA MODAL ══════════════ */
+.modal-overlay {
+  position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:2000;display:flex;align-items:center;justify-content:center;
+  padding:12px;animation:fadein .15s ease;
+}
+.modal-overlay.hidden { display:none; }
+.modal-box {
+  background:#fff;border-radius:14px;padding:18px 22px 16px;
+  max-width:480px;width:100%;max-height:calc(100vh - 24px);overflow-y:auto;
+  box-shadow:0 8px 36px rgba(0,0,0,.32);font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;
+}
+.modal-title { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1.25rem;color:var(--blue);margin-bottom:8px; }
+.modal-ferpa {
+  background:#fff8e1;border:2px solid var(--uco-bronze);border-radius:8px;
+  padding:6px 10px;font-size:.76rem;font-weight:800;color:#5a3d00;
+  margin-bottom:10px;line-height:1.4;
+}
+.modal-ferpa strong { color:var(--uco-bronze); }
+.modal-opts { display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px; }
+.modal-opt {
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  background:#f5f5f5;border:2.5px solid #ccc;border-radius:10px;
+  padding:8px 6px 7px;cursor:pointer;text-align:center;width:100%;
+  transition:border-color .12s,background .12s;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;
+}
+.modal-opt:hover { background:var(--blue-bg);border-color:var(--blue); }
+.modal-opt.sel   { background:var(--blue-bg);border-color:var(--blue); }
+.modal-opt:focus-visible { outline:3px solid var(--blue);outline-offset:2px; }
+.opt-icon { font-size:1.3rem;line-height:1; }
+.opt-lbl  { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.8rem;color:var(--dark);line-height:1.2; }
+.opt-ex   { display:inline-block;margin-top:2px;background:var(--blue);color:#fff;border-radius:5px;padding:1px 6px;font-size:.66rem;font-weight:900; }
+.modal-field { display:flex;flex-direction:column;gap:4px;margin-bottom:10px; }
+.modal-field label { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.95rem;color:var(--dark); }
+.modal-input {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;font-weight:800;
+  border:2.5px solid #767676;border-radius:8px;padding:7px 12px;
+  width:100%;min-height:40px;
+}
+.modal-input:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,79,160,.2);outline:none; }
+.modal-btns { display:flex;gap:8px;justify-content:flex-end; }
+.m-cancel {
+  background:#fff;border:2.5px solid #767676;border-radius:8px;
+  padding:7px 18px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;min-height:38px;
+}
+.m-cancel:hover { background:#f0f0f0; }
+.m-confirm {
+  background:var(--blue);color:#fff;border:none;border-radius:8px;
+  padding:7px 20px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;min-height:38px;
+}
+.m-confirm:hover { background:#1244a0; }
+@media(max-width:500px) {
+  .modal-opts { grid-template-columns:1fr; }
+}
+
+/* ══════════════ CUSTOM PHOTO SYSTEM ══════════════ */
+
+/* toolbar manage button */
+.tb-photos { background:rgba(255,255,255,.12);color:#fff; }
+.tb-photos:hover { background:rgba(255,255,255,.24); }
+
+/* add-photo button inside symbol bank */
+.add-photo-btn {
+  width:var(--sym-sz);min-height:var(--sym-sz);
+  background:#fff;border:3px dashed var(--uco-bronze);border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;cursor:pointer;padding:6px 4px;
+  transition:background .12s,border-color .12s;
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;flex-shrink:0;
+}
+.add-photo-btn:hover { background:#fffbea;border-color:#8a5e00; }
+.add-photo-btn:focus-visible { outline:3px solid var(--uco-bronze);outline-offset:2px; }
+.add-photo-btn .ap-icon { font-size:2rem;line-height:1; }
+.add-photo-btn .ap-lbl  { font-size:.72rem;font-weight:900;color:var(--uco-bronze);text-align:center;line-height:1.2; }
+
+/* custom sym card — same size as .sym but photo-style */
+.sym.cat-custom {
+  border-color: var(--uco-bronze);
+  background: #fffbea;
+}
+.sym.cat-custom img {
+  width:70px;height:70px;object-fit:cover;border-radius:6px;
+}
+
+/* ── PHOTO UPLOAD MODAL ── */
+.photo-modal-overlay {
+  position:fixed;inset:0;background:rgba(0,0,0,.58);
+  z-index:3000;display:flex;align-items:center;justify-content:center;
+  padding:16px;animation:fadein .14s ease;
+}
+.photo-modal-overlay.hidden { display:none; }
+.photo-modal-box {
+  background:#fff;border-radius:14px;padding:20px 24px 18px;
+  max-width:440px;width:100%;
+  box-shadow:0 8px 36px rgba(0,0,0,.34);
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;
+}
+.photo-modal-title {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1.25rem;
+  color:var(--uco-blue);margin-bottom:12px;
+}
+.photo-drop-zone {
+  border:3px dashed var(--uco-bronze);border-radius:10px;
+  background:#fffbea;padding:20px;text-align:center;
+  cursor:pointer;margin-bottom:12px;
+  transition:background .15s,border-color .15s;
+}
+.photo-drop-zone:hover,.photo-drop-zone.dragover { background:#fff3cd;border-color:#8a5e00; }
+.photo-drop-zone .pdz-icon { font-size:2.4rem;margin-bottom:6px; }
+.photo-drop-zone .pdz-text { font-size:.9rem;font-weight:900;color:#5a3d00; }
+.photo-drop-zone .pdz-sub  { font-size:.75rem;font-weight:700;color:#8a7040;margin-top:3px; }
+.photo-preview-wrap {
+  display:none;flex-direction:column;align-items:center;gap:8px;margin-bottom:12px;
+}
+.photo-preview-wrap.visible { display:flex; }
+.photo-preview {
+  width:100px;height:100px;object-fit:cover;
+  border-radius:10px;border:3px solid var(--uco-bronze);
+}
+.photo-label-field { display:flex;flex-direction:column;gap:4px;margin-bottom:12px; }
+.photo-label-field label { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.95rem;color:var(--dark); }
+.photo-label-input {
+  font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1rem;font-weight:800;
+  border:2.5px solid #767676;border-radius:8px;padding:7px 12px;
+  width:100%;min-height:40px;
+}
+.photo-label-input:focus { border-color:var(--uco-blue);box-shadow:0 0 0 3px rgba(0,45,98,.18);outline:none; }
+.photo-modal-btns { display:flex;gap:8px;justify-content:flex-end; }
+.pm-cancel  { background:#fff;border:2.5px solid #767676;border-radius:8px;padding:7px 18px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;min-height:38px; }
+.pm-cancel:hover { background:#f0f0f0; }
+.pm-save    { background:var(--uco-blue);color:#fff;border:none;border-radius:8px;padding:7px 20px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;min-height:38px; }
+.pm-save:hover { background:#001d44; }
+.pm-save:disabled { background:#aaa;cursor:not-allowed; }
+
+/* ── MANAGE PHOTOS PANEL ── */
+.manage-overlay {
+  position:fixed;inset:0;background:rgba(0,0,0,.58);
+  z-index:3000;display:flex;align-items:center;justify-content:center;
+  padding:16px;animation:fadein .14s ease;
+}
+.manage-overlay.hidden { display:none; }
+.manage-box {
+  background:#fff;border-radius:14px;padding:20px 24px 18px;
+  max-width:560px;width:100%;max-height:calc(100vh - 32px);
+  display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 8px 36px rgba(0,0,0,.34);font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;
+}
+.manage-title { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:1.25rem;color:var(--uco-blue);flex-shrink:0; }
+.manage-note  { font-size:.78rem;font-weight:800;color:#555;background:#f5f5f5;border-radius:8px;padding:7px 10px;flex-shrink:0;line-height:1.5; }
+.manage-grid  {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:10px;overflow-y:auto;flex:1;padding:4px 2px;
+}
+.manage-empty { font-size:.9rem;font-weight:800;color:#aaa;text-align:center;padding:24px 0; }
+.manage-card  {
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:#fafafa;border:2px solid #ddd;border-radius:10px;padding:8px 6px;
+  position:relative;
+}
+.manage-card img { width:72px;height:72px;object-fit:cover;border-radius:7px; }
+.manage-card .mc-name { font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.72rem;text-align:center;color:var(--dark);word-break:break-word; }
+.manage-card .mc-del  {
+  position:absolute;top:-7px;right:-7px;
+  background:var(--red);color:#fff;border-radius:50%;
+  width:22px;height:22px;font-size:.72rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:2px solid #fff;
+}
+.manage-card .mc-del:hover { background:#7b1025; }
+.manage-footer { display:flex;justify-content:flex-end;flex-shrink:0; }
+.manage-close  { background:var(--uco-blue);color:#fff;border:none;border-radius:8px;padding:7px 20px;font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.9rem;font-weight:900;cursor:pointer;min-height:38px; }
+.manage-close:hover { background:#001d44; }
+/* ══════════════ DRAG-TO-DELETE TRASH CAN ══════════════ */
+#drag-trash {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.7);
+  z-index: 9998;
+  background: #b91c3f;
+  color: #fff;
+  border-radius: 20px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Arial Rounded MT Bold', 'Varela Round', Arial, sans-serif;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+  white-space: nowrap;
+  border: 3px solid #fff;
+}
+#drag-trash.visible {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  pointer-events: all;
+}
+#drag-trash.over {
+  background: #7b1025;
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: 0 8px 32px rgba(185,28,63,.5);
+}
+#drag-trash .trash-icon { font-size: 1.6rem; line-height: 1; }
+@media print { #drag-trash { display:none!important; } }
+</style>
+</head>
+<body>
+
+<div id="sr-live" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+<a href="#aac-main" class="sr-only">Skip to content</a>
+
+<!-- ══ DRAG-TO-DELETE TRASH ══ -->
+<div id="drag-trash" role="status" aria-live="polite">
+  <span class="trash-icon">🗑️</span> Drop here to delete
+</div>
+
+<!-- ══ TOOLBAR ══ -->
+<div class="toolbar" role="banner">
+  <!-- Row 1: title + student management -->
+  <div class="toolbar-row">
+    <span class="toolbar-title">🌟 Early Transition Skills – START NOW!</span>
+    <span class="toolbar-badge">ARASAAC AAC Edition</span>
+    <div class="stu-switcher">
+      <span class="stu-label" id="tb-stu-label">👤 Student:</span>
+      <select id="stu-select" aria-label="Select student" onchange="switchStudent(this.value)"></select>
+      <button class="stu-btn stu-add" onclick="addStudent()" id="tb-btn-new">＋ New</button>
+      <button class="stu-btn stu-ren" onclick="renameStudent()" id="tb-btn-ren" aria-label="Rename student">✏️ Rename</button>
+      <button class="stu-btn stu-del" onclick="deleteStudent()" id="tb-btn-del" aria-label="Delete student">🗑️ Delete</button>
+    </div>
+  </div>
+  <!-- Row 2: actions + language -->
+  <div class="toolbar-row">
+    <button class="tb-btn tb-speech" id="speech-toggle"
+            role="button" aria-pressed="false"
+            onclick="toggleSpeech()">
+      🔇 <span id="tb-speech-lbl">Read: Off</span>
+    </button>
+    <button class="tb-btn tb-photos" onclick="openManagePhotos()" id="tb-btn-photos">📷 <span id="tb-photos-lbl">My Photos</span></button>
+    <button class="tb-btn tb-print"  onclick="printAll()"         id="tb-btn-print">🖨️ <span id="tb-print-lbl">Print All</span></button>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn"        id="lang-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn"        id="lang-vi" onclick="setLang('vi')">VI</button>
+    </div>
+  </div>
+</div>
+
+
+<main id="aac-main">
+
+<!-- ══ COVER ══ -->
+<div id="aac-cover">
+<article class="page pg-cover">
+  <div class="cover-head">
+    <h1>Early Transition Skills<br>START NOW!</h1>
+    <div class="edition-badge">🖼️ ARASAAC AAC Edition</div>
+  </div>
+  <div class="cover-sub"><h2>👆 Tap or drag pictures to answer!</h2></div>
+  <div class="stu-banner" id="cover-stu-name">👤 Loading…</div>
+  <nav class="cover-grid" aria-label="Section navigation">
+    <button class="cover-cell" data-seckey="strengths"    onclick="aacShow('strengths')">   <span class="cc-emoji">💪</span><span class="cc-lbl">My Strengths</span>    <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="supports"     onclick="aacShow('supports')">    <span class="cc-emoji">🤝</span><span class="cc-lbl">Who Helps Me</span>    <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="preferences"  onclick="aacShow('preferences')"> <span class="cc-emoji">👍</span><span class="cc-lbl">I Like / Don't Like</span><span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="me"           onclick="aacShow('me')">          <span class="cc-emoji">🧒</span><span class="cc-lbl">All About Me</span>    <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="iep"          onclick="aacShow('iep')">         <span class="cc-emoji">⭐</span><span class="cc-lbl">My Team</span>         <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="goals"        onclick="aacShow('goals')">       <span class="cc-emoji">🌈</span><span class="cc-lbl">My Goal</span>         <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="communication"onclick="aacShow('communication')"><span class="cc-emoji">💬</span><span class="cc-lbl">How I Feel</span>      <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="food"         onclick="aacShow('food')">        <span class="cc-emoji">🍽️</span><span class="cc-lbl">Food I Like</span>     <span class="cc-tap">👆 Tap</span></button>
+    <button class="cover-cell" data-seckey="dream"        onclick="aacShow('dream')">       <span class="cc-emoji">🚀</span><span class="cc-lbl">My Dream Job</span>    <span class="cc-tap">👆 Tap</span></button>
+  </nav>
+  <div class="cover-foot">
+    <div><span class="cc-gold">How to Cite:</span> Schubert-Frank, K. (2026). <em>Early Transition Skills – START NOW!</em> [Educational packet — ARASAAC AAC Edition].</div>
+    <div class="cc-lic"><span class="cc-gold">©</span> CC BY-NC-SA 4.0 · Educational use only · ARASAAC symbols © Government of Aragón / Sergio Palao · CC BY-NC-SA</div>
+  </div>
+</article>
+</div>
+
+<!-- ══ SECTION PAGES (built by JS) ══ -->
+<div id="sections-root"></div>
+
+<!-- ══ FERPA MODAL ══ -->
+<div class="modal-overlay hidden" id="stu-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title-txt">
+  <div class="modal-box">
+    <h2 class="modal-title" id="modal-title-txt">🔒 Add a Student</h2>
+    <div class="modal-ferpa" role="note">
+      <strong>FERPA reminder:</strong> Do not enter the student's real name.
+      Use a pseudonym, code, or ID number to protect student privacy.
+    </div>
+    <div class="modal-opts" role="group" aria-label="Identifier type">
+      <button class="modal-opt sel" id="opt-pseudo"   onclick="selectOpt('pseudo')"   aria-pressed="true">
+        <span class="opt-icon">🎨</span>
+        <span class="opt-lbl">Pseudonym</span>
+        <span class="opt-ex">e.g. RedBird</span>
+      </button>
+      <button class="modal-opt"     id="opt-id"       onclick="selectOpt('id')"        aria-pressed="false">
+        <span class="opt-icon">🔢</span>
+        <span class="opt-lbl">Student ID</span>
+        <span class="opt-ex">e.g. Case-42</span>
+      </button>
+      <button class="modal-opt"     id="opt-initials" onclick="selectOpt('initials')" aria-pressed="false">
+        <span class="opt-icon">🔤</span>
+        <span class="opt-lbl">Initials + #</span>
+        <span class="opt-ex">e.g. K.S.#3</span>
+      </button>
+    </div>
+    <div class="modal-field">
+      <label for="modal-inp" id="modal-lbl">Enter a pseudonym:</label>
+      <input class="modal-input" type="text" id="modal-inp" placeholder="e.g. RedBird"
+             aria-labelledby="modal-lbl"
+             onkeydown="if(event.key==='Enter') confirmModal()">
+    </div>
+    <div class="modal-btns">
+      <button class="m-cancel" onclick="cancelModal()">Cancel</button>
+      <button class="m-confirm" onclick="confirmModal()">✅ Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PHOTO UPLOAD MODAL ══ -->
+<div class="photo-modal-overlay hidden" id="photo-modal"
+     role="dialog" aria-modal="true" aria-labelledby="photo-modal-title">
+  <div class="photo-modal-box">
+    <h2 class="photo-modal-title" id="photo-modal-title">📷 Add a Custom Photo</h2>
+    <!-- file drop / click zone -->
+    <div class="photo-drop-zone" id="photo-drop-zone"
+         onclick="document.getElementById('photo-file-input').click()"
+         ondragover="photoDzOver(event)" ondragleave="photoDzLeave(event)" ondrop="photoDzDrop(event)">
+      <div class="pdz-icon">📁</div>
+      <div class="pdz-text">Click to choose a photo, or drag one here</div>
+      <div class="pdz-sub">JPG, PNG, GIF, WebP — auto-resized to fit</div>
+    </div>
+    <input type="file" id="photo-file-input" accept="image/*"
+           style="display:none" onchange="photoFileChosen(this)">
+    <!-- preview -->
+    <div class="photo-preview-wrap" id="photo-preview-wrap">
+      <img class="photo-preview" id="photo-preview-img" src="" alt="Preview">
+    </div>
+    <!-- label -->
+    <div class="photo-label-field">
+      <label for="photo-label-input">Name this picture (required):</label>
+      <input class="photo-label-input" type="text" id="photo-label-input"
+             placeholder="e.g. Mrs. Garcia, Dr. Patel, Pastor Mike"
+             onkeydown="if(event.key==='Enter') savePhoto()">
+    </div>
+    <div class="photo-modal-btns">
+      <button class="pm-cancel" onclick="closePhotoModal()">Cancel</button>
+      <button class="pm-save" id="pm-save-btn" onclick="savePhoto()" disabled>💾 Save Photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MANAGE PHOTOS PANEL ══ -->
+<div class="manage-overlay hidden" id="manage-modal"
+     role="dialog" aria-modal="true" aria-labelledby="manage-title">
+  <div class="manage-box">
+    <h2 class="manage-title" id="manage-title">📷 My Custom Photos</h2>
+    <div class="manage-note">
+      Photos are shared across all students on this device — upload once, place for any student.
+      Deleting a photo removes it from the bank; any student who had it placed will show a placeholder instead.
+    </div>
+    <div class="manage-grid" id="manage-grid">
+      <div class="manage-empty">No custom photos yet.<br>Use the 📷 button in any symbol bank to add one.</div>
+    </div>
+    <div class="manage-footer">
+      <button class="manage-close" onclick="closeManagePhotos()">Done</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════
+   SPEECH ENGINE
+═══════════════════════════════════════════ */
+const SPEECH = {
+  on: false,
+  ok: 'speechSynthesis' in window,
+  _v: null,
+  _init(){
+    if(this._v) return;
+    const vs = speechSynthesis.getVoices();
+    this._v = vs.find(v=>v.lang==='en-US'&&v.localService)
+           || vs.find(v=>v.lang.startsWith('en')&&v.localService)
+           || vs.find(v=>v.lang.startsWith('en'))
+           || vs[0] || null;
+  },
+  say(word){
+    if(!this.on||!this.ok) return;
+    speechSynthesis.cancel();
+    this._init();
+    const u = new SpeechSynthesisUtterance(word);
+    if(this._v) u.voice = this._v;
+    u.lang='en-US'; u.rate=.88; u.pitch=1.05; u.volume=1;
+    speechSynthesis.speak(u);
+  }
+};
+if('speechSynthesis' in window)
+  speechSynthesis.addEventListener('voiceschanged',()=>{ SPEECH._v=null; SPEECH._init(); });
+(function(){ if(localStorage.getItem('aac_speech')==='1') _setSpeech(true); })();
+
+function toggleSpeech(){
+  _setSpeech(!SPEECH.on);
+  if(SPEECH.on) SPEECH.say('Word reading is on');
+}
+function _setSpeech(on){
+  SPEECH.on = on;
+  const btn = document.getElementById('speech-toggle');
+  const lbl = document.getElementById('tb-speech-lbl');
+  if(btn) btn.setAttribute('aria-pressed',on?'true':'false');
+  if(lbl) lbl.textContent = on ? t('speechOn') : t('speechOff');
+  localStorage.setItem('aac_speech', on?'1':'0');
+  if(on&&!SPEECH.ok){ alert('This browser does not support text-to-speech.\nTry Chrome, Edge, or Safari.'); _setSpeech(false); }
+}
+
+/* ═══════════════════════════════════════════
+   IMAGE URL  (ARASAAC static CDN — reliable, no auth required)
+   Custom photos use 'custom:uuid' IDs and are resolved from localStorage.
+═══════════════════════════════════════════ */
+function imgUrl(id){
+  if(String(id).startsWith('custom:')){
+    const photos=getCustomPhotos();
+    const p=photos.find(p=>p.id===id);
+    return p ? p.data : '';
+  }
+  return `https://static.arasaac.org/pictograms/${id}/${id}_300.png`;
+}
+
+/* ═══════════════════════════════════════════
+   SYMBOL DATA
+═══════════════════════════════════════════ */
+const SYMS = {
+  feel:[],people:[],place:[],action:[],thing:[],time:[],jobs:[],
+  food:[
+    [2462,'Apple','food'],[6267,'Banana','food'],[6268,'Orange','food'],
+    [6269,'Grapes','food'],[6270,'Strawberry','food'],[6271,'Watermelon','food'],
+    [6272,'Pear','food'],[6273,'Mango','food'],[6274,'Pineapple','food'],
+    [6275,'Peach','food'],[6276,'Blueberries','food'],[6277,'Cherries','food'],
+    [6278,'Bread','food'],[6279,'Rice','food'],[6280,'Pasta','food'],
+    [6281,'Pizza','food'],[6282,'Sandwich','food'],[6283,'Soup','food'],
+    [6284,'Salad','food'],[6285,'Burger','food'],[6286,'Hot Dog','food'],
+    [6287,'Chicken','food'],[6288,'Fish','food'],[6289,'Eggs','food'],
+    [6290,'Cheese','food'],[6291,'Yoghurt','food'],[6292,'Milk','food'],
+    [6293,'Juice','food'],[6294,'Water','food'],[6295,'Cereal','food'],
+    [6296,'Cookies','food'],[6297,'Cake','food'],[6298,'Ice Cream','food'],
+    [6299,'Chocolate','food'],[6300,'Chips','food'],[6301,'Vegetables','food'],
+    [6302,'Carrots','food'],[6303,'Broccoli','food'],[6304,'Corn','food'],
+    [6305,'Potato','food'],[6306,'Beans','food'],[6307,'Tacos','food'],
+    [6308,'Sushi','food'],[6309,'Noodles','food'],[6310,'Porridge','food'],
+    [30403,'Drink','food'],[6311,'Tea','food'],[6312,'Smoothie','food'],
+  ]
+};
+
+const CAT_TERMS = {
+  feel:[['happy','Happy'],['sad','Sad'],['angry','Angry'],['scared','Scared'],['surprised','Surprised'],['excited','Excited'],['tired','Tired'],['overwhelmed','Overwhelmed'],['bored','Bored'],['proud','Proud'],['calm','Calm'],['worried','Worried'],['confused','Confused'],['embarrassed','Embarrassed'],['lonely','Lonely'],['love','Love'],['frustrated','Frustrated'],['nervous','Nervous']],
+  people:[['mother','Mother'],['father','Father'],['family','Family'],['grandmother','Grandmother'],['grandfather','Grandfather'],['brother','Brother'],['sister','Sister'],['friend','Friend'],['teacher','Teacher'],['principal','Principal'],['doctor','Doctor'],['nurse','Nurse'],['therapist','Therapist'],['helper','Helper'],['child','Child'],['group','Group']],
+  place:[['school','School'],['home','Home'],['park','Park'],['playground','Playground'],['library','Library'],['hospital','Hospital'],['shop','Shop'],['community','Community'],['outside','Outside'],['inside','Inside'],['classroom','Classroom'],['gym','Gym'],['cafeteria','Cafeteria']],
+  action:[['reading','Reading'],['writing','Writing'],['mathematics','Maths'],['drawing','Drawing'],['music','Music'],['sport','Sport'],['dancing','Dancing'],['cooking','Cooking'],['swimming','Swimming'],['running','Running'],['playing','Playing'],['helping','Helping'],['listening','Listening'],['talking','Talking'],['kind','Being Kind'],['building','Building'],['gardening','Gardening'],['computer','Computing'],['dressing','Dressing'],['cleaning','Cleaning'],['shopping','Shopping'],['travelling','Travelling'],['calm','Staying Calm'],['friends','Making Friends']],
+  thing:[['animals','Animals'],['dog','Dogs'],['cat','Cats'],['book','Books'],['television','TV / Videos'],['video game','Video Games'],['toys','Toys'],['nature','Nature'],['quiet','Quiet'],['loud','Loud'],['alone','Alone Time'],['group','Groups'],['yes','Yes'],['no','No'],['maybe','Maybe'],['help','I Need Help'],['break','I Need a Break'],['good','Good'],['bad','Not Good']],
+  time:[['now','Now'],['today','Today'],['tomorrow','Tomorrow'],['week','This Week'],['month','This Month'],['morning','Morning'],['afternoon','Afternoon'],['evening','Evening'],['always','Always'],['sometimes','Sometimes'],['never','Never']],
+  jobs:[['doctor','Doctor'],['teacher','Teacher'],['cook','Chef / Cook'],['artist','Artist'],['musician','Musician'],['firefighter','Firefighter'],['farmer','Farmer'],['veterinarian','Vet'],['builder','Builder'],['bus driver','Bus Driver'],['shop assistant','Shop Worker'],['scientist','Scientist'],['engineer','Engineer'],['nurse','Nurse'],['police','Police Officer'],['dancer','Dancer'],['actor','Actor'],['athlete','Athlete']],
+};
+
+const FALLBACKS = {
+  feel:[[3767,'Happy','feel'],[3765,'Sad','feel'],[3764,'Angry','feel'],[3768,'Scared','feel'],[3771,'Surprised','feel'],[3766,'Excited','feel'],[3770,'Tired','feel'],[4909,'Overwhelmed','feel'],[4301,'Bored','feel'],[3774,'Proud','feel'],[4912,'Calm','feel'],[4908,'Worried','feel'],[4303,'Confused','feel'],[4302,'Embarrassed','feel'],[4911,'Lonely','feel'],[5629,'Love','feel'],[4907,'Frustrated','feel'],[4910,'Nervous','feel']],
+  people:[[2330,'Mother','people'],[2329,'Father','people'],[2392,'Family','people'],[8234,'Grandmother','people'],[8235,'Grandfather','people'],[2331,'Brother','people'],[2332,'Sister','people'],[8417,'Friend','people'],[6385,'Teacher','people'],[6390,'Principal','people'],[6389,'Doctor','people'],[6388,'Nurse','people'],[6386,'Therapist','people'],[6391,'Helper','people'],[2325,'Child','people']],
+  place:[[3082,'School','place'],[2441,'Home','place'],[6493,'Park','place'],[6494,'Playground','place'],[6492,'Library','place'],[6490,'Hospital','place'],[6491,'Shop','place'],[6496,'Outside','place'],[6497,'Inside','place'],[6498,'Classroom','place']],
+  action:[[3776,'Reading','action'],[3777,'Writing','action'],[4014,'Maths','action'],[3779,'Drawing','action'],[3780,'Music','action'],[4031,'Sport','action'],[3782,'Dancing','action'],[3783,'Cooking','action'],[4044,'Swimming','action'],[4052,'Running','action'],[3786,'Playing','action'],[3787,'Helping','action'],[3788,'Listening','action'],[3789,'Talking','action'],[3790,'Being Kind','action'],[3791,'Building','action'],[3793,'Computing','action'],[3794,'Dressing','action']],
+  thing:[[4502,'Animals','thing'],[4503,'Dogs','thing'],[4504,'Cats','thing'],[4505,'Books','thing'],[4506,'TV','thing'],[4508,'Toys','thing'],[4509,'Nature','thing'],[4518,'Yes','thing'],[4519,'No','thing'],[4521,'Help','thing'],[4524,'Good','thing'],[4525,'Not Good','thing']],
+  time:[[2549,'Now','time'],[5596,'Today','time'],[5597,'Tomorrow','time'],[5598,'This Week','time'],[5600,'Morning','time'],[5601,'Afternoon','time'],[5604,'Sometimes','time'],[5605,'Never','time']],
+  jobs:[[6389,'Doctor','jobs'],[6385,'Teacher','jobs'],[4312,'Cook','jobs'],[3779,'Artist','jobs'],[3780,'Musician','jobs'],[4318,'Firefighter','jobs'],[4322,'Farmer','jobs'],[4323,'Vet','jobs'],[4309,'Builder','jobs'],[4314,'Bus Driver','jobs'],[4316,'Shop Worker','jobs'],[4313,'Scientist','jobs'],[4317,'Engineer','jobs']],
+};
+
+const EMOJI_FB = {
+  3767:'😊',3765:'😢',3764:'😠',3768:'😨',3771:'😲',3766:'🤩',3770:'😴',4909:'😰',4301:'😒',3774:'🏅',4912:'😌',4908:'😟',4303:'😕',4302:'😳',4911:'😔',5629:'❤️',4907:'😤',4910:'😬',
+  2330:'👩',2329:'👨',2392:'👨‍👩‍👧',8234:'👵',8235:'👴',2331:'🧒',2332:'🧒',8417:'👫',6385:'👩‍🏫',6390:'🏛️',6389:'👩‍⚕️',6388:'💊',6386:'🗣️',6391:'🤝',2325:'👶',
+  3082:'🏫',2441:'🏠',6493:'🌳',6494:'🛝',6492:'📚',6490:'🏥',6491:'🏪',6496:'🌤️',6497:'🏠',6498:'🏫',
+  2462:'🍎',6267:'🍌',6268:'🍊',6269:'🍇',6270:'🍓',6271:'🍉',6272:'🍐',6273:'🥭',6274:'🍍',6275:'🍑',6276:'🫐',6277:'🍒',6278:'🍞',6279:'🍚',6280:'🍝',6281:'🍕',6282:'🥪',6283:'🍲',6284:'🥗',6285:'🍔',6286:'🌭',6287:'🍗',6288:'🐟',6289:'🥚',6290:'🧀',6291:'🍶',6292:'🥛',6293:'🧃',6294:'💧',6295:'🥣',6296:'🍪',6297:'🎂',6298:'🍦',6299:'🍫',6300:'🍟',6301:'🥦',6302:'🥕',6303:'🥦',6304:'🌽',6305:'🥔',6306:'🫘',6307:'🌮',6308:'🍣',6309:'🍜',6310:'🥣',6311:'🍵',6312:'🥤',30403:'🥤',
+  3776:'📖',3777:'✏️',4014:'🔢',3779:'🎨',3780:'🎵',4031:'⚽',3782:'💃',3783:'🍳',4044:'🏊',4052:'🏃',3786:'🎮',3787:'🤝',3788:'👂',3789:'🗣️',3790:'❤️',3791:'🏗️',3793:'💻',3794:'👕',
+  4502:'🐾',4503:'🐶',4504:'🐱',4505:'📚',4506:'📺',4508:'🧸',4509:'🌿',4518:'✅',4519:'❌',4521:'🆘',4524:'👍',4525:'👎',
+  2549:'⏰',5596:'📅',5597:'🔜',5598:'📆',5600:'🌅',5601:'🌆',5604:'🔄',5605:'🚫',
+  4312:'👨‍🍳',4318:'🚒',4322:'🌾',4323:'🐾',4309:'👷',4314:'🚌',4316:'🛒',4313:'🔬',4317:'⚙️',
+};
+const CAT_EMOJI = {feel:'😊',people:'👤',place:'📍',food:'🍽️',action:'⚡',thing:'⭐',time:'🕐',jobs:'💼'};
+
+/* ═══════════════════════════════════════════
+   SECTION CONFIG
+═══════════════════════════════════════════ */
+const PAGES = {
+  strengths:{
+    title:'💪 My Strengths',pg:'pg-str',
+    prompt:"What are you good at? Drag or tap a picture, then tap a box!",
+    cats:['action','feel','place'],cols:2,
+    zones:[{id:'str-school',lbl:'🏫 At School',cls:'dz-blue'},{id:'str-home',lbl:'🏠 At Home',cls:'dz-green'},{id:'str-inside',lbl:'❤️ Inside Me',cls:'dz-red'},{id:'str-others',lbl:'👫 With Others',cls:'dz-teal'}]
+  },
+  supports:{
+    title:'🤝 Who Helps Me',pg:'pg-sup',
+    prompt:"Who are the people who help you? Drag or tap a picture into a box!",
+    cats:['people'],cols:2,
+    zones:[{id:'sup-family',lbl:'👨‍👩‍👧 Family',cls:'dz-blue'},{id:'sup-friends',lbl:'👫 Friends',cls:'dz-green'},{id:'sup-school',lbl:'🏫 School',cls:'dz-teal'},{id:'sup-community',lbl:'🏙️ Community',cls:'dz-purple'}]
+  },
+  preferences:{
+    title:"👍 I Like / I Don't Like",pg:'pg-pref',
+    prompt:"What do you like? What don't you like? Drag or tap a picture!",
+    cats:['thing','food','action'],cols:2,
+    zones:[{id:'pref-like',lbl:'😊 I Like',cls:'dz-green'},{id:'pref-dislike',lbl:"😕 I Don't Like",cls:'dz-red'}]
+  },
+  me:{
+    title:'🧒 All About Me',pg:'pg-me',
+    prompt:'Tell us about you! Drag or tap pictures into the boxes.',
+    cats:['feel','thing','action','food'],cols:3,
+    zones:[{id:'me-likes',lbl:'⭐ I Like',cls:'dz-green'},{id:'me-needs',lbl:'📋 I Need',cls:'dz-teal'},{id:'me-feel',lbl:'😊 I Feel',cls:'dz-red'}]
+  },
+  iep:{
+    title:'⭐ My Team',pg:'pg-iep',
+    prompt:'Who is on your team? Drag or tap people into the boxes!',
+    cats:['people'],cols:3,
+    zones:[{id:'iep-school',lbl:'🏫 My School Team',cls:'dz-blue'},{id:'iep-home',lbl:'🏠 My Home Team',cls:'dz-green'},{id:'iep-community',lbl:'🏙️ My Community Team',cls:'dz-purple'}]
+  },
+  goals:{
+    title:'🌈 My Goal',pg:'pg-goal',
+    prompt:'What do you want to do? Drag or tap pictures to show your goal!',
+    cats:['action','people','time'],cols:3,
+    zones:[{id:'goal-want',lbl:'🌈 I Want To',cls:'dz-yellow'},{id:'goal-helps',lbl:'🤝 Who Helps',cls:'dz-blue'},{id:'goal-when',lbl:'📅 When',cls:'dz-teal'}]
+  },
+  communication:{
+    title:'💬 How I Feel',pg:'pg-comm',
+    prompt:'How do you feel? How do you show people? Drag or tap!',
+    cats:['feel','action','thing'],cols:3,
+    zones:[{id:'comm-feel',lbl:'❤️ I Feel',cls:'dz-red'},{id:'comm-show',lbl:'💬 I Show It By',cls:'dz-purple'},{id:'comm-need',lbl:'✋ I Need',cls:'dz-teal'}]
+  },
+  food:{
+    title:'🍽️ Food I Like',pg:'pg-food',
+    prompt:"What food do you like? What food don't you like? Drag or tap!",
+    cats:['food'],cols:3,
+    zones:[{id:'food-like',lbl:'😋 I Like This Food',cls:'dz-green'},{id:'food-dislike',lbl:"🙅 I Don't Like This",cls:'dz-red'},{id:'food-want',lbl:'🍽️ I Want This Now',cls:'dz-orange'}]
+  },
+  dream:{
+    title:'🚀 My Dream Job',pg:'pg-dream',
+    prompt:'What job would you love? Drag or tap a job picture!',
+    cats:['jobs','action'],cols:2,
+    zones:[{id:'dream-job',lbl:'🚀 My Dream Job',cls:'dz-orange'},{id:'dream-why',lbl:'❤️ I Like This Because',cls:'dz-red'}]
+  },
+};
+
+/* ═══════════════════════════════════════════
+   BUILD SECTION PAGES
+═══════════════════════════════════════════ */
+function buildSections(){
+  const root = document.getElementById('sections-root');
+  for(const [key,cfg] of Object.entries(PAGES)){
+    const zonesHtml = cfg.zones.map(z=>`
+      <div class="drop-zone ${z.cls}" id="${z.id}"
+           ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event,'${key}')">
+        <div class="dz-lbl">${z.lbl}</div>
+        <div class="dz-cards"></div>
+        <div class="dz-ph">Drag or tap a picture here</div>
+      </div>`).join('');
+
+    const sec = document.createElement('div');
+    sec.id = `aac-sec-${key}`;
+    sec.className = 'section-page';
+    sec.innerHTML = `
+      <article class="page ${cfg.pg}">
+        <div class="print-stu-name" id="psn-${key}"></div>
+        <div class="back-bar">
+          <button class="back-btn" onclick="aacHome()">← Back</button>
+          <span class="sec-indicator">${cfg.title}</span>
+        </div>
+        <div class="inner">
+          <h2 class="page-title">${cfg.title}</h2>
+          <p class="page-prompt">${cfg.prompt}</p>
+          <div class="search-row">
+            <input class="sym-search" type="text" id="search-${key}"
+                   placeholder="🔍 Search for more pictures…"
+                   aria-label="Search ARASAAC for symbols"
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();searchSyms('${key}');}">
+            <button class="search-btn" onclick="searchSyms('${key}')">Search</button>
+            <button class="clear-btn" onclick="resetPage('${key}')">🔄 Clear</button>
+          </div>
+          <p class="search-status" id="status-${key}"></p>
+          <div class="sym-bank">
+            <div class="bank-label">🖼️ Choose a picture — tap to select, then tap a box:</div>
+            <div class="bank-scroll"><div class="bank-row" id="bank-${key}">
+              <button class="add-photo-btn" onclick="openPhotoModal('${key}')" aria-label="Add a custom photo to this bank">
+                <span class="ap-icon">📷</span>
+                <span class="ap-lbl">Add<br>Photo</span>
+              </button>
+            </div></div>
+          </div>
+          <div class="answer-area">
+            <div class="answer-grid cols-${cfg.cols}" id="drops-${key}">${zonesHtml}</div>
+          </div>
+        </div>
+        <div class="arasaac-bar">Pictographic symbols © Government of Aragón / Sergio Palao for ARASAAC (arasaac.org) · CC BY-NC-SA</div>
+      </article>`;
+    root.appendChild(sec);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   ARASAAC CATEGORY LOADER
+═══════════════════════════════════════════ */
+let _loadProm = null;
+
+async function loadAllCats(){
+  if(_loadProm) return _loadProm;
+  _loadProm = (async()=>{
+    let ok = false;
+    try {
+      const t = await fetch('https://api.arasaac.org/v1/pictograms/en/search/happy',{signal:AbortSignal.timeout(5000)});
+      ok = t.ok;
+    } catch(e){ ok=false; }
+    if(!ok){ Object.entries(FALLBACKS).forEach(([c,a])=>SYMS[c]=a); return; }
+    for(const [cat,terms] of Object.entries(CAT_TERMS)){
+      const batch = await Promise.all(terms.map(async([term,label])=>{
+        try{
+          const r=await fetch(`https://api.arasaac.org/v1/pictograms/en/search/${encodeURIComponent(term)}`,{signal:AbortSignal.timeout(4000)});
+          if(!r.ok) return null;
+          const d=await r.json();
+          return d&&d.length ? [d[0]._id,label,cat] : null;
+        } catch(e){ return null; }
+      }));
+      const res=batch.filter(Boolean);
+      SYMS[cat] = res.length>=4 ? res : (FALLBACKS[cat]||res);
+    }
+  })();
+  return _loadProm;
+}
+
+/* ═══════════════════════════════════════════
+   SYMBOL ELEMENT + BANK
+═══════════════════════════════════════════ */
+function makeSymEl(id, label, cat, pageKey){
+  const div = document.createElement('div');
+  div.className = `sym cat-${cat}`;
+  div.draggable = true;
+  div.tabIndex = 0;
+  div.setAttribute('role','button');
+  div.setAttribute('aria-label', label);
+  div.dataset.id    = String(id);
+  div.dataset.label = label;
+  div.dataset.cat   = cat;
+  div.dataset.page  = pageKey;
+  const fb = EMOJI_FB[id] || CAT_EMOJI[cat] || '⭐';
+  div.innerHTML = `
+    <img src="${imgUrl(id)}" alt="${label}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="img-ph" style="display:none">${fb}</div>
+    <span class="s-word">${label}</span>`;
+  div.addEventListener('click',()=>tapSym(div,pageKey));
+  div.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); tapSym(div,pageKey); } });
+  return div;
+}
+
+function populateBank(key){
+  const cfg=PAGES[key], bank=document.getElementById('bank-'+key);
+  if(!bank) return;
+  const needsLoad = cfg.cats.some(c=>c!=='food'&&(!SYMS[c]||!SYMS[c].length));
+  if(needsLoad){
+    bank.innerHTML='<div style="padding:10px;font-weight:800;color:#666">⏳ Loading pictures…</div>';
+    loadAllCats().then(()=>{ delete bank.dataset.loaded; _fillBank(key); });
+    return;
+  }
+  _fillBank(key);
+}
+
+function _fillBank(key){
+  const cfg=PAGES[key], bank=document.getElementById('bank-'+key);
+  if(!bank||bank.dataset.loaded) return;
+  bank.dataset.loaded='1';
+
+  // Remove everything EXCEPT the persistent Add Photo button
+  Array.from(bank.children).forEach(c=>{ if(!c.classList.contains('add-photo-btn')) c.remove(); });
+
+  let syms=[];
+  for(const c of cfg.cats){ if(SYMS[c]&&SYMS[c].length) syms=syms.concat(SYMS[c]); }
+  const seen=new Set();
+  syms=syms.filter(s=>{ if(seen.has(s[0])) return false; seen.add(s[0]); return true; });
+  if(!syms.length){
+    const msg=document.createElement('div');
+    msg.style.cssText='padding:8px;color:var(--red);font-weight:900';
+    msg.textContent='⚠️ No pictures loaded — use the Search box above.';
+    bank.appendChild(msg);
+  } else {
+    syms.forEach(([id,lbl,cat])=>bank.appendChild(makeSymEl(id,lbl,cat,key)));
+  }
+
+  // Inject custom photos at the end of the bank
+  injectCustomPhotos(key);
+}
+
+/* live search */
+async function searchSyms(key){
+  const q=document.getElementById(`search-${key}`).value.trim();
+  if(!q) return;
+  const status=document.getElementById(`status-${key}`);
+  const bank=document.getElementById(`bank-${key}`);
+  status.textContent=`Searching for "${q}"…`;
+  try{
+    const res=await fetch(`https://api.arasaac.org/v1/pictograms/en/search/${encodeURIComponent(q)}`);
+    if(!res.ok) throw new Error();
+    const data=await res.json();
+    const results=data.slice(0,24);
+    if(!results.length){ status.textContent=`No results for "${q}" — try another word.`; return; }
+    bank.querySelectorAll('.search-result').forEach(e=>e.remove());
+    results.forEach(item=>{
+      const el=makeSymEl(item._id, item.keywords[0]?.keyword||q,'thing',key);
+      el.classList.add('search-result');
+      bank.appendChild(el);
+    });
+    status.textContent=`Found ${results.length} pictures for "${q}".`;
+    bank.parentElement.scrollTop=bank.parentElement.scrollHeight;
+    announce(`Found ${results.length} pictures for ${q}`);
+  } catch(e){ status.textContent='Search unavailable — using the pictures below.'; }
+}
+
+/* ═══════════════════════════════════════════
+   TAP INTERACTION
+═══════════════════════════════════════════ */
+let lastTap = null;
+
+function tapSym(el, pageKey){
+  if(el.classList.contains('used')) return;
+  if(lastTap&&lastTap.el===el){ el.style.outline=''; lastTap=null; return; }
+  if(lastTap) lastTap.el.style.outline='';
+  lastTap={el,pageKey};
+  el.style.outline='4px solid #FFD700';
+  el.style.outlineOffset='2px';
+  SPEECH.say(el.dataset.label);
+  announce(el.dataset.label+' selected. Now tap a box to place it.');
+}
+
+document.addEventListener('click',e=>{
+  const zone=e.target.closest('.drop-zone');
+  if(zone&&lastTap){
+    const placed=lastTap;
+    placed.el.style.outline=''; lastTap=null;
+    placeCard(zone,placed.el,placed.pageKey);
+    SPEECH.say(placed.el.dataset.label);
+    announce('Picture placed!');
+  }
+});
+
+/* ═══════════════════════════════════════════
+   DRAG-TO-DELETE TRASH HELPERS
+═══════════════════════════════════════════ */
+function _isCustomSym(el){ return el && el.dataset && String(el.dataset.id).startsWith('custom:'); }
+
+function _showTrash(){
+  document.getElementById('drag-trash').classList.add('visible');
+}
+function _hideTrash(){
+  const t=document.getElementById('drag-trash');
+  t.classList.remove('visible','over');
+}
+function _trashOver(){ document.getElementById('drag-trash').classList.add('over'); }
+function _trashOut(){  document.getElementById('drag-trash').classList.remove('over'); }
+
+function _deleteCustomSym(symEl){
+  const id=symEl.dataset.id, label=symEl.dataset.label;
+  const photos=getCustomPhotos();
+  saveCustomPhotos(photos.filter(p=>p.id!==id));
+  // Remove from every bank
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(e=>e.remove());
+  announce(label+' deleted.');
+}
+
+/* ═══════════════════════════════════════════
+   DRAG (desktop)
+═══════════════════════════════════════════ */
+let dragSym=null;
+document.addEventListener('dragstart',e=>{
+  const s=e.target.closest('.sym'); if(!s) return;
+  dragSym=s; s.classList.add('dragging'); e.dataTransfer.effectAllowed='copy';
+  if(_isCustomSym(s)) _showTrash();
+});
+document.addEventListener('dragend',e=>{
+  const s=e.target.closest('.sym'); if(s) s.classList.remove('dragging');
+  dragSym=null; _hideTrash();
+});
+
+// Wire trash can for desktop drag
+(function(){
+  const trash=document.getElementById('drag-trash');
+  trash.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; _trashOver(); });
+  trash.addEventListener('dragleave', _trashOut);
+  trash.addEventListener('drop', e=>{
+    e.preventDefault(); _hideTrash();
+    if(dragSym && _isCustomSym(dragSym)) _deleteCustomSym(dragSym);
+  });
+})();
+
+function dzOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function dzLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+function dzDrop(e,pageKey){ e.preventDefault(); e.currentTarget.classList.remove('drag-over'); if(dragSym) placeCard(e.currentTarget,dragSym,pageKey); }
+
+/* ═══════════════════════════════════════════
+   TOUCH DRAG (mobile pointer events)
+═══════════════════════════════════════════ */
+(function initTouch(){
+  let ghost=null,tSym=null,tPage=null,ox=0,oy=0;
+  document.addEventListener('pointerdown',e=>{
+    const sym=e.target.closest('.sym');
+    if(!sym||sym.classList.contains('used')||e.pointerType==='mouse') return;
+    e.preventDefault(); sym.setPointerCapture(e.pointerId);
+    tSym=sym; tPage=sym.dataset.page;
+    ghost=document.createElement('div');
+    ghost.style.cssText='position:fixed;z-index:9999;pointer-events:none;background:#fff;border:3px solid #555;border-radius:12px;padding:6px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.28);';
+    const img=sym.querySelector('img'), ph=sym.querySelector('.img-ph');
+    if(img&&img.style.display!=='none') ghost.innerHTML=`<img src="${img.src}" style="width:50px;height:50px;object-fit:contain"><span style="font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.72rem">${sym.dataset.label}</span>`;
+    else ghost.innerHTML=`<div style="font-size:2rem">${ph?ph.textContent:'🖼️'}</div><span style="font-family:'Arial Rounded MT Bold','Varela Round',Arial,sans-serif;font-size:.72rem">${sym.dataset.label}</span>`;
+    const r=sym.getBoundingClientRect(); ox=e.clientX-r.left; oy=e.clientY-r.top;
+    ghost.style.left=(e.clientX-ox)+'px'; ghost.style.top=(e.clientY-oy)+'px';
+    document.body.appendChild(ghost); sym.classList.add('dragging');
+    if(_isCustomSym(sym)) _showTrash();
+  },{passive:false});
+
+  document.addEventListener('pointermove',e=>{
+    if(!ghost) return; e.preventDefault();
+    ghost.style.left=(e.clientX-ox)+'px'; ghost.style.top=(e.clientY-oy)+'px';
+    // Highlight trash when hovering over it
+    if(_isCustomSym(tSym)){
+      const trash=document.getElementById('drag-trash');
+      const tr=trash.getBoundingClientRect();
+      const over=e.clientX>=tr.left&&e.clientX<=tr.right&&e.clientY>=tr.top&&e.clientY<=tr.bottom;
+      over ? _trashOver() : _trashOut();
+    }
+  },{passive:false});
+
+  document.addEventListener('pointerup',e=>{
+    if(!ghost||!tSym) return;
+    ghost.remove(); ghost=null; tSym.classList.remove('dragging');
+
+    // Check if released over trash
+    const trash=document.getElementById('drag-trash');
+    const tr=trash.getBoundingClientRect();
+    const overTrash=e.clientX>=tr.left&&e.clientX<=tr.right&&e.clientY>=tr.top&&e.clientY<=tr.bottom;
+
+    if(overTrash && _isCustomSym(tSym)){
+      _hideTrash();
+      _deleteCustomSym(tSym);
+    } else {
+      _hideTrash();
+      const el=document.elementFromPoint(e.clientX,e.clientY);
+      const zone=el?el.closest('.drop-zone'):null;
+      if(zone) placeCard(zone,tSym,tPage);
+    }
+    tSym=null; tPage=null;
+  });
+})();
+
+/* ═══════════════════════════════════════════
+   PLACE / REMOVE CARDS
+═══════════════════════════════════════════ */
+function placeCard(zone,symEl,pageKey){
+  const id=symEl.dataset.id, label=symEl.dataset.label;
+  _renderCard(zone,id,label,pageKey);
+  symEl.classList.add('used');
+  const ps=getPageState(pageKey);
+  const cards=ps[zone.id]||[];
+  if(!cards.find(c=>c.id===id)) cards.push({id,label});
+  setZoneState(pageKey,zone.id,cards);
+}
+
+function _renderCard(zone,id,label,pageKey){
+  const ph=zone.querySelector('.dz-ph'); if(ph) ph.style.display='none';
+  const isCustom=String(id).startsWith('custom:');
+  const fb=isCustom ? '📷' : (EMOJI_FB[parseInt(id)]||'⭐');
+  const src=isCustom ? imgUrl(id) : imgUrl(id);
+  const card=document.createElement('div');
+  card.className='dropped'; card.dataset.cardId=id;
+  card.setAttribute('role','img'); card.setAttribute('aria-label',`${label}, tap × to remove`);
+  card.innerHTML=`
+    <img src="${src}" alt="${label}"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <div class="d-em" style="display:none">${fb}</div>
+    <span class="d-word">${label}</span>
+    <button class="d-remove" aria-label="Remove ${label}"
+            onclick="removeCard(this,'${id}','${pageKey}')">✕</button>`;
+  zone.querySelector('.dz-cards').appendChild(card);
+}
+
+function removeCard(btn,id,pageKey){
+  const card=btn.closest('.dropped'), zone=card.closest('.drop-zone');
+  card.remove();
+  if(!zone.querySelectorAll('.dropped').length){
+    const ph=zone.querySelector('.dz-ph'); if(ph) ph.style.display='';
+  }
+  document.querySelectorAll(`#aac-sec-${pageKey} [data-id="${id}"]`).forEach(e=>e.classList.remove('used'));
+  const ps=getPageState(pageKey);
+  if(ps[zone.id]) ps[zone.id]=ps[zone.id].filter(c=>c.id!==id);
+  setZoneState(pageKey,zone.id,ps[zone.id]||[]);
+}
+
+/* ═══════════════════════════════════════════
+   STUDENT PROFILES
+═══════════════════════════════════════════ */
+const MAX_STU=50, KEY_LIST='aac_students', KEY_CUR='aac_current';
+const dataKey=n=>'aac_data_'+n;
+
+function getStudents(){ try{return JSON.parse(localStorage.getItem(KEY_LIST))||[];}catch(e){return [];} }
+function saveStudents(a){ try{localStorage.setItem(KEY_LIST,JSON.stringify(a));}catch(e){} }
+function getCurrent(){ return localStorage.getItem(KEY_CUR)||''; }
+function setCurrent(name){ localStorage.setItem(KEY_CUR,name); refreshStuUI(); }
+
+function refreshStuUI(){
+  const stus=getStudents(), cur=getCurrent();
+  const sel=document.getElementById('stu-select');
+  if(!sel) return;
+  sel.innerHTML='';
+  stus.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; if(n===cur) o.selected=true; sel.appendChild(o); });
+  const banner=document.getElementById('cover-stu-name');
+  if(banner) banner.textContent=cur?'👤 '+cur:'👤 No student selected';
+  document.querySelectorAll('.print-stu-name').forEach(el=>el.textContent=cur?'Student: '+cur:'');
+  updateProgress();
+}
+
+function addStudent(){
+  if(getStudents().length>=MAX_STU){ alert('Maximum of '+MAX_STU+' students reached.'); return; }
+  openModal('add');
+}
+function switchStudent(name){ if(!name) return; clearAllDOM(); setCurrent(name); updateProgress(); announce('Switched to '+name); }
+function renameStudent(){
+  const cur=getCurrent(); if(!cur){ alert('No student selected.'); return; }
+  const nw=prompt('Rename "'+cur+'" to:',cur);
+  if(!nw||!nw.trim()||nw.trim()===cur) return;
+  const t=nw.trim(), stus=getStudents();
+  if(stus.includes(t)){ alert(t+' already exists.'); return; }
+  saveStudentState(t,loadStudentState(cur));
+  try{localStorage.removeItem(dataKey(cur));}catch(e){}
+  const idx=stus.indexOf(cur); if(idx>-1) stus[idx]=t;
+  saveStudents(stus); setCurrent(t); announce('Renamed to '+t);
+}
+function deleteStudent(){
+  const cur=getCurrent(); if(!cur){ alert('No student selected.'); return; }
+  if(!confirm('Delete all data for "'+cur+'"? This cannot be undone.')) return;
+  try{localStorage.removeItem(dataKey(cur));}catch(e){}
+  const stus=getStudents().filter(n=>n!==cur); saveStudents(stus); clearAllDOM();
+  if(stus.length){ setCurrent(stus[0]); } else { localStorage.removeItem(KEY_CUR); refreshStuUI(); }
+  announce(cur+' deleted.');
+}
+
+/* state */
+function loadStudentState(n){ if(!n) return {}; try{return JSON.parse(localStorage.getItem(dataKey(n)))||{};}catch(e){return {};} }
+function saveStudentState(n,s){ if(!n) return; try{localStorage.setItem(dataKey(n),JSON.stringify(s));}catch(e){} }
+function loadState(){ return loadStudentState(getCurrent()); }
+function saveState(s){ saveStudentState(getCurrent(),s); }
+function getPageState(key){ return loadState()[key]||{}; }
+function setZoneState(pageKey,zoneId,cards){
+  const s=loadState(); if(!s[pageKey]) s[pageKey]={}; s[pageKey][zoneId]=cards; saveState(s); updateProgress();
+}
+function clearPageState(key){ const s=loadState(); delete s[key]; saveState(s); updateProgress(); }
+
+function clearAllDOM(){
+  Object.keys(PAGES).forEach(key=>{
+    const sec=document.getElementById('aac-sec-'+key); if(!sec) return;
+    sec.querySelectorAll('.drop-zone').forEach(z=>{
+      z.querySelector('.dz-cards').innerHTML='';
+      const ph=z.querySelector('.dz-ph'); if(ph) ph.style.display='';
+    });
+    sec.querySelectorAll('.sym').forEach(s=>{ s.classList.remove('used'); s.style.outline=''; });
+    // invalidate bank but keep the Add Photo button
+    const bank=document.getElementById('bank-'+key);
+    if(bank){
+      Array.from(bank.children).forEach(c=>{ if(!c.classList.contains('add-photo-btn')) c.remove(); });
+      delete bank.dataset.loaded;
+    }
+  });
+}
+
+function restorePage(key){
+  const ps=getPageState(key);
+  if(!Object.keys(ps).length) return;
+  for(const [zoneId,cards] of Object.entries(ps)){
+    const zone=document.getElementById(zoneId);
+    if(!zone||!cards.length) continue;
+    if(zone.querySelectorAll('.dropped').length===cards.length) continue;
+    zone.querySelector('.dz-cards').innerHTML='';
+    const ph=zone.querySelector('.dz-ph'); if(ph) ph.style.display='none';
+    cards.forEach(({id,label})=>{
+      _renderCard(zone,id,label,key);
+      document.querySelectorAll(`#bank-${key} [data-id="${id}"]`).forEach(e=>e.classList.add('used'));
+    });
+  }
+}
+
+function resetPage(key){
+  const sec=document.getElementById(`aac-sec-${key}`); if(!sec) return;
+  sec.querySelectorAll('.drop-zone').forEach(z=>{ z.querySelector('.dz-cards').innerHTML=''; const ph=z.querySelector('.dz-ph');if(ph) ph.style.display=''; });
+  sec.querySelectorAll('.sym').forEach(s=>{ s.classList.remove('used'); s.style.outline=''; });
+  if(lastTap&&lastTap.pageKey===key){ lastTap=null; }
+  const st=document.getElementById(`status-${key}`); if(st) st.textContent='';
+  clearPageState(key);
+}
+
+function updateProgress(){
+  const state=loadState();
+  document.querySelectorAll('.cover-cell').forEach(cell=>{
+    const key=cell.dataset.seckey; if(!key) return;
+    const count=Object.values(state[key]||{}).reduce((n,a)=>n+(a?a.length:0),0);
+    let badge=cell.querySelector('.prog-badge');
+    if(count>0){
+      if(!badge){ badge=document.createElement('span'); badge.className='prog-badge'; badge.setAttribute('aria-label',count+' pictures placed'); cell.appendChild(badge); }
+      badge.textContent='✅ '+count;
+    } else { if(badge) badge.remove(); }
+  });
+}
+
+/* ═══════════════════════════════════════════
+   ROUTING
+═══════════════════════════════════════════ */
+function aacShow(key){
+  document.getElementById('aac-cover').classList.add('hidden');
+  document.querySelectorAll('.section-page').forEach(e=>e.classList.remove('active'));
+  const t=document.getElementById('aac-sec-'+key);
+  if(t){
+    t.classList.add('active');
+    populateBank(key);
+    restorePage(key);
+    const bb=t.querySelector('.back-btn'); if(bb) bb.focus();
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  try{ history.pushState({s:key},'','#'+key); }catch(e){}
+}
+
+function aacHome(){
+  document.querySelectorAll('.section-page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('aac-cover').classList.remove('hidden');
+  updateProgress();
+  window.scrollTo({top:0,behavior:'instant'});
+  try{ history.pushState({},'',window.location.pathname); }catch(e){}
+}
+
+window.addEventListener('popstate',()=>{
+  const h=window.location.hash.replace('#','');
+  if(h&&PAGES[h]) aacShow(h); else aacHome();
+});
+
+function announce(msg){ const l=document.getElementById('sr-live'); if(l){ l.textContent=''; setTimeout(()=>l.textContent=msg,50); } }
+
+/* ═══════════════════════════════════════════
+   PRINT ALL
+═══════════════════════════════════════════ */
+function printAll(){
+  const cur=getCurrent(); if(!cur){ alert('Please select a student first.'); return; }
+  Object.keys(PAGES).forEach(key=>{
+    const sec=document.getElementById('aac-sec-'+key); if(!sec) return;
+    populateBank(key); restorePage(key); sec.classList.add('print-include');
+    const psn=document.getElementById('psn-'+key); if(psn) psn.textContent='Student: '+cur+'  |  Early Transition Skills – START NOW!';
+  });
+  document.getElementById('aac-cover').classList.add('hidden');
+  window.print();
+  setTimeout(()=>{
+    Object.keys(PAGES).forEach(key=>{ const s=document.getElementById('aac-sec-'+key); if(s) s.classList.remove('print-include','active'); });
+    document.getElementById('aac-cover').classList.remove('hidden');
+  },600);
+}
+
+/* ═══════════════════════════════════════════
+   CUSTOM PHOTO ENGINE
+   Storage key: 'aac_custom_photos'
+   Schema: [{id:'custom:uuid', label:'Mrs Garcia', data:'data:image/...'}]
+   Photos are device/operator-scoped — shared across all students.
+   IDs are prefixed 'custom:' to distinguish from ARASAAC numeric IDs.
+═══════════════════════════════════════════ */
+const KEY_PHOTOS = 'aac_custom_photos';
+
+function getCustomPhotos(){
+  try{ return JSON.parse(localStorage.getItem(KEY_PHOTOS))||[]; } catch(e){ return []; }
+}
+function saveCustomPhotos(arr){
+  try{ localStorage.setItem(KEY_PHOTOS,JSON.stringify(arr)); } catch(e){
+    alert('Storage is full. Please delete some photos before adding more.'); 
+  }
+}
+
+/* Make a symbol card element for a custom photo */
+function makeCustomSymEl(photo, pageKey){
+  return makeSymEl(photo.id, photo.label, 'custom', pageKey);
+}
+
+/* Override makeSymEl to handle custom: IDs — inject base64 src directly */
+const _origMakeSymEl = makeSymEl;
+// Patch after definition — handled inline in makeSymEl via imgUrl
+
+/* Inject all custom photos into a page's bank (called by _fillBank) */
+function injectCustomPhotos(pageKey){
+  const bank=document.getElementById('bank-'+pageKey);
+  if(!bank) return;
+  // Remove any stale custom syms first
+  bank.querySelectorAll('.sym.cat-custom').forEach(e=>e.remove());
+  const photos=getCustomPhotos();
+  photos.forEach(photo=>{
+    const el=makeSymEl(photo.id, photo.label, 'custom', pageKey);
+    bank.appendChild(el);
+  });
+}
+
+/* Refresh custom photos in ALL currently-loaded banks */
+function refreshAllBanksCustom(){
+  Object.keys(PAGES).forEach(key=>{
+    const bank=document.getElementById('bank-'+key);
+    if(!bank||!bank.dataset.loaded) return;
+    injectCustomPhotos(key);
+  });
+}
+
+/* ── PHOTO UPLOAD MODAL ── */
+let _photoDataUrl = null;   // base64 of current staged photo
+let _photoModalContext = null; // which page triggered the upload (or 'toolbar')
+
+function openPhotoModal(pageKey){
+  _photoDataUrl = null;
+  _photoModalContext = pageKey || 'toolbar';
+  document.getElementById('photo-label-input').value='';
+  document.getElementById('photo-label-input').style.borderColor='';
+  document.getElementById('photo-preview-wrap').classList.remove('visible');
+  document.getElementById('photo-preview-img').src='';
+  document.getElementById('pm-save-btn').disabled=true;
+  document.getElementById('photo-drop-zone').classList.remove('dragover');
+  document.getElementById('photo-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('photo-label-input').focus(),120);
+}
+
+function closePhotoModal(){
+  document.getElementById('photo-modal').classList.add('hidden');
+  _photoDataUrl=null;
+}
+
+/* resize + convert to base64 */
+function processImageFile(file){
+  if(!file||!file.type.startsWith('image/')){ alert('Please choose an image file (JPG, PNG, GIF, or WebP).'); return; }
+  const MAX=120; // px — keeps each stored photo ~10–20 KB
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');
+      const scale=Math.min(1, MAX/Math.max(img.width,img.height));
+      canvas.width=Math.round(img.width*scale);
+      canvas.height=Math.round(img.height*scale);
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      _photoDataUrl=canvas.toDataURL('image/jpeg',0.82);
+      // show preview
+      document.getElementById('photo-preview-img').src=_photoDataUrl;
+      document.getElementById('photo-preview-wrap').classList.add('visible');
+      document.getElementById('pm-save-btn').disabled=false;
+      document.getElementById('photo-label-input').focus();
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function photoFileChosen(input){
+  if(input.files&&input.files[0]) processImageFile(input.files[0]);
+}
+
+function photoDzOver(e){ e.preventDefault(); document.getElementById('photo-drop-zone').classList.add('dragover'); }
+function photoDzLeave(e){ document.getElementById('photo-drop-zone').classList.remove('dragover'); }
+function photoDzDrop(e){
+  e.preventDefault();
+  document.getElementById('photo-drop-zone').classList.remove('dragover');
+  const file=e.dataTransfer.files[0];
+  if(file) processImageFile(file);
+}
+
+function savePhoto(){
+  const labelEl=document.getElementById('photo-label-input');
+  const label=labelEl.value.trim();
+  if(!_photoDataUrl){ alert('Please choose a photo first.'); return; }
+  if(!label){
+    labelEl.style.borderColor='var(--red)';
+    labelEl.placeholder='⚠️ A name is required';
+    labelEl.focus();
+    setTimeout(()=>{ labelEl.style.borderColor=''; labelEl.placeholder='e.g. Mrs. Garcia, Dr. Patel, Pastor Mike'; },2000);
+    return;
+  }
+  const id='custom:'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const photos=getCustomPhotos();
+  photos.push({id, label, data:_photoDataUrl});
+  saveCustomPhotos(photos);
+  closePhotoModal();
+  refreshAllBanksCustom();
+  announce(label+' added to photo bank.');
+}
+
+/* ── MANAGE PHOTOS PANEL ── */
+function openManagePhotos(){
+  renderManageGrid();
+  document.getElementById('manage-modal').classList.remove('hidden');
+}
+
+function closeManagePhotos(){
+  document.getElementById('manage-modal').classList.add('hidden');
+}
+
+function renderManageGrid(){
+  const grid=document.getElementById('manage-grid');
+  const photos=getCustomPhotos();
+  if(!photos.length){
+    grid.innerHTML='<div class="manage-empty">No custom photos yet.<br>Use the 📷 button in any symbol bank to add one.</div>';
+    return;
+  }
+  grid.innerHTML='';
+  photos.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='manage-card';
+    card.innerHTML=`
+      <img src="${p.data}" alt="${p.label}">
+      <span class="mc-name">${p.label}</span>
+      <button class="mc-del" aria-label="Delete ${p.label}"
+              onclick="deleteCustomPhoto('${p.id}')">✕</button>`;
+    grid.appendChild(card);
+  });
+}
+
+function deleteCustomPhoto(id){
+  const photos=getCustomPhotos();
+  const photo=photos.find(p=>p.id===id);
+  if(!photo) return;
+  if(!confirm(`Delete "${photo.label}"?\n\nAny student who had this photo placed will show a placeholder instead.`)) return;
+  saveCustomPhotos(photos.filter(p=>p.id!==id));
+  // Remove from all open banks
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(e=>e.remove());
+  renderManageGrid();
+  announce(photo.label+' deleted.');
+}
+
+/* Close modals on overlay click or Escape */
+document.addEventListener('click',e=>{
+  if(e.target===document.getElementById('photo-modal')) closePhotoModal();
+  if(e.target===document.getElementById('manage-modal')) closeManagePhotos();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(!document.getElementById('photo-modal').classList.contains('hidden')) closePhotoModal();
+    if(!document.getElementById('manage-modal').classList.contains('hidden')) closeManagePhotos();
+  }
+});
+
+/* ═══════════════════════════════════════════
+   FERPA MODAL
+═══════════════════════════════════════════ */
+let _modalMode='add', _selOpt='pseudo';
+const OPT_LABELS={pseudo:'Enter a pseudonym:',id:'Enter a student ID or case number:',initials:'Enter initials + number:'};
+const OPT_PH={pseudo:'e.g. RedBird, Sunshine, Table3A',id:'e.g. 10234, SLP-07, Case-42',initials:'e.g. K.S.#3, A.B.-2, J.T.04'};
+
+function openModal(mode){
+  _modalMode=mode||'add'; _selOpt='pseudo';
+  ['pseudo','id','initials'].forEach(k=>{ const b=document.getElementById('opt-'+k); if(b){ b.classList.toggle('sel',k==='pseudo'); b.setAttribute('aria-pressed',k==='pseudo'?'true':'false'); } });
+  const inp=document.getElementById('modal-inp'); if(inp){ inp.value=''; inp.placeholder=OPT_PH.pseudo; inp.style.borderColor=''; }
+  const lbl=document.getElementById('modal-lbl'); if(lbl) lbl.textContent=OPT_LABELS.pseudo;
+  const title=document.getElementById('modal-title-txt'); if(title) title.textContent=_modalMode==='first'?t('modalFirst'):t('modalAdd');
+  _applyModalLang();
+  document.getElementById('stu-modal').classList.remove('hidden');
+  setTimeout(()=>{ const i=document.getElementById('modal-inp'); if(i) i.focus(); },100);
+}
+
+function cancelModal(){
+  document.getElementById('stu-modal').classList.add('hidden');
+  if(_modalMode==='first'&&!getStudents().length){ saveStudents(['Student-1']); setCurrent('Student-1'); }
+}
+
+function selectOpt(key){
+  _selOpt=key;
+  ['pseudo','id','initials'].forEach(k=>{ const b=document.getElementById('opt-'+k); if(b){ b.classList.toggle('sel',k===key); b.setAttribute('aria-pressed',k===key?'true':'false'); } });
+  const inp=document.getElementById('modal-inp'); if(inp) inp.placeholder=OPT_PH[key]||'';
+  const lbl=document.getElementById('modal-lbl'); if(lbl) lbl.textContent=OPT_LABELS[key]||'Enter an identifier:';
+  if(inp) inp.focus();
+}
+
+function confirmModal(){
+  const inp=document.getElementById('modal-inp'), raw=inp?inp.value.trim():'';
+  if(!raw){ inp.style.borderColor='var(--red)'; inp.placeholder='⚠️ Please enter something'; inp.focus(); setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder=OPT_PH[_selOpt]||''; },2000); return; }
+  const stus=getStudents();
+  if(stus.includes(raw)){ inp.style.borderColor='var(--red)'; inp.value=''; inp.placeholder='⚠️ '+raw+' already exists'; inp.focus(); setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder=OPT_PH[_selOpt]||''; },2500); return; }
+  stus.push(raw); saveStudents(stus); setCurrent(raw); clearAllDOM();
+  document.getElementById('stu-modal').classList.add('hidden');
+  announce('Student '+raw+' added.');
+}
+
+document.addEventListener('click',e=>{ if(e.target===document.getElementById('stu-modal')) cancelModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const m=document.getElementById('stu-modal'); if(m&&!m.classList.contains('hidden')) cancelModal(); } });
+
+/* ═══════════════════════════════════════════
+   PRINT KEY INTERCEPTION
+   Ctrl+P / Cmd+P triggers printAll() so the
+   browser never prints the raw cover view.
+═══════════════════════════════════════════ */
+window.addEventListener('beforeprint', ()=>{
+  const cur=getCurrent();
+  if(!cur) return; // let browser handle if no student
+  // stamp and show all section pages for print
+  Object.keys(PAGES).forEach(key=>{
+    const sec=document.getElementById('aac-sec-'+key); if(!sec) return;
+    populateBank(key); restorePage(key); sec.classList.add('print-include');
+    const psn=document.getElementById('psn-'+key);
+    if(psn) psn.textContent='Student: '+cur+'  |  Early Transition Skills – START NOW!';
+  });
+  document.getElementById('aac-cover').classList.add('hidden');
+});
+window.addEventListener('afterprint', ()=>{
+  Object.keys(PAGES).forEach(key=>{
+    const s=document.getElementById('aac-sec-'+key);
+    if(s) s.classList.remove('print-include','active');
+  });
+  document.getElementById('aac-cover').classList.remove('hidden');
+});
+
+/* ═══════════════════════════════════════════
+   SPANISH / ENGLISH TRANSLATION SYSTEM
+   setLang('es') / setLang('en') rebuilds all
+   visible text from the LANG dictionary.
+   Student data and photo labels are not affected.
+═══════════════════════════════════════════ */
+let _lang = 'en';
+
+const LANG = {
+  en: {
+    // toolbar
+    stuLabel:    '👤 Student:',
+    btnNew:      '＋ New',
+    btnRen:      '✏️ Rename',
+    btnDel:      '🗑️ Delete',
+    speechOff:   'Read: Off',
+    speechOn:    'Read: On',
+    myPhotos:    'My Photos',
+    printAll:    'Print All',
+    // cover
+    coverSub:    '👆 Tap or drag pictures to answer!',
+    coverSections: {
+      strengths:    ['💪','My Strengths'],
+      supports:     ['🤝','Who Helps Me'],
+      preferences:  ['👍',"I Like / Don't Like"],
+      me:           ['🧒','All About Me'],
+      iep:          ['⭐','My Team'],
+      goals:        ['🌈','My Goal'],
+      communication:['💬','How I Feel'],
+      food:         ['🍽️','Food I Like'],
+      dream:        ['🚀','My Dream Job'],
+    },
+    ccTap: '👆 Tap',
+    // section pages
+    backBtn:  '← Back',
+    searchPh: '🔍 Search for more pictures…',
+    searchBtn:'Search',
+    clearBtn: '🔄 Clear',
+    bankLbl:  '🖼️ Choose a picture — tap to select, then tap a box:',
+    loading:  '⏳ Loading pictures…',
+    dzPh:     'Drag or tap a picture here',
+    // section titles + prompts + zones
+    sections: {
+      strengths:{
+        title:'💪 My Strengths',
+        prompt:"What are you good at? Drag or tap a picture, then tap a box!",
+        zones:['🏫 At School','🏠 At Home','❤️ Inside Me','👫 With Others']
+      },
+      supports:{
+        title:'🤝 Who Helps Me',
+        prompt:"Who are the people who help you? Drag or tap a picture into a box!",
+        zones:['👨‍👩‍👧 Family','👫 Friends','🏫 School','🏙️ Community']
+      },
+      preferences:{
+        title:"👍 I Like / I Don't Like",
+        prompt:"What do you like? What don't you like? Drag or tap a picture!",
+        zones:["😊 I Like","😕 I Don't Like"]
+      },
+      me:{
+        title:'🧒 All About Me',
+        prompt:'Tell us about you! Drag or tap pictures into the boxes.',
+        zones:['⭐ I Like','📋 I Need','😊 I Feel']
+      },
+      iep:{
+        title:'⭐ My Team',
+        prompt:'Who is on your team? Drag or tap people into the boxes!',
+        zones:['🏫 My School Team','🏠 My Home Team','🏙️ My Community Team']
+      },
+      goals:{
+        title:'🌈 My Goal',
+        prompt:'What do you want to do? Drag or tap pictures to show your goal!',
+        zones:['🌈 I Want To','🤝 Who Helps','📅 When']
+      },
+      communication:{
+        title:'💬 How I Feel',
+        prompt:'How do you feel? How do you show people? Drag or tap!',
+        zones:['❤️ I Feel','💬 I Show It By','✋ I Need']
+      },
+      food:{
+        title:'🍽️ Food I Like',
+        prompt:"What food do you like? What food don't you like? Drag or tap!",
+        zones:["😋 I Like This Food","🙅 I Don't Like This","🍽️ I Want This Now"]
+      },
+      dream:{
+        title:'🚀 My Dream Job',
+        prompt:'What job would you love? Drag or tap a job picture!',
+        zones:['🚀 My Dream Job','❤️ I Like This Because']
+      },
+    },
+    // modals
+    modalAdd:      '🔒 Add a Student',
+    modalFirst:    '👋 Welcome! Add Your First Student',
+    ferpaNote:     '<strong>FERPA reminder:</strong> Do not enter the student\'s real name. Use a pseudonym, code, or ID number to protect student privacy.',
+    optPseudo:     'Pseudonym',
+    optId:         'Student ID',
+    optInitials:   'Initials + #',
+    optExPseudo:   'e.g. RedBird',
+    optExId:       'e.g. Case-42',
+    optExInitials: 'e.g. K.S.#3',
+    lblPseudo:     'Enter a pseudonym:',
+    lblId:         'Enter a student ID or case number:',
+    lblInitials:   'Enter initials + number:',
+    phPseudo:      'e.g. RedBird, Sunshine, Table3A',
+    phId:          'e.g. 10234, SLP-07, Case-42',
+    phInitials:    'e.g. K.S.#3, A.B.-2, J.T.04',
+    btnCancel:     'Cancel',
+    btnAddStu:     '✅ Add Student',
+    // photo modal
+    photoTitle:    '📷 Add a Custom Photo',
+    photoDzText:   'Click to choose a photo, or drag one here',
+    photoDzSub:    'JPG, PNG, GIF, WebP — auto-resized to fit',
+    photoLbl:      'Name this picture (required):',
+    photoPh:       'e.g. Mrs. Garcia, Dr. Patel, Pastor Mike',
+    photoCancel:   'Cancel',
+    photoSave:     '💾 Save Photo',
+    // manage panel
+    manageTitle:   '📷 My Custom Photos',
+    manageNote:    'Photos are shared across all students on this device — upload once, place for any student. Deleting a photo removes it from the bank; any student who had it placed will show a placeholder instead.',
+    manageEmpty:   'No custom photos yet.<br>Use the 📷 button in any symbol bank to add one.',
+    manageDone:    'Done',
+    // trash
+    trashLbl:      '🗑️ Drop here to delete',
+    // add photo btn
+    addPhotoLbl:   'Add\nPhoto',
+    // print strip
+    printStrip:    'Early Transition Skills – START NOW!',
+    // arasaac bar
+    arasaacBar:    'Pictographic symbols © Government of Aragón / Sergio Palao for ARASAAC (arasaac.org) · CC BY-NC-SA',
+  },
+
+  es: {
+    stuLabel:    '👤 Estudiante:',
+    btnNew:      '＋ Nuevo',
+    btnRen:      '✏️ Renombrar',
+    btnDel:      '🗑️ Eliminar',
+    speechOff:   'Leer: No',
+    speechOn:    'Leer: Sí',
+    myPhotos:    'Mis Fotos',
+    printAll:    'Imprimir',
+    coverSub:    '👆 ¡Toca o arrastra imágenes para responder!',
+    coverSections: {
+      strengths:    ['💪','Mis Fortalezas'],
+      supports:     ['🤝','¿Quién Me Ayuda?'],
+      preferences:  ['👍','Me Gusta / No Me Gusta'],
+      me:           ['🧒','Todo Sobre Mí'],
+      iep:          ['⭐','Mi Equipo'],
+      goals:        ['🌈','Mi Meta'],
+      communication:['💬','Cómo Me Siento'],
+      food:         ['🍽️','Comida que Me Gusta'],
+      dream:        ['🚀','Mi Trabajo Soñado'],
+    },
+    ccTap: '👆 Toca',
+    backBtn:  '← Regresar',
+    searchPh: '🔍 Buscar más imágenes…',
+    searchBtn:'Buscar',
+    clearBtn: '🔄 Borrar',
+    bankLbl:  '🖼️ Elige una imagen — toca para seleccionar, luego toca un recuadro:',
+    loading:  '⏳ Cargando imágenes…',
+    dzPh:     'Arrastra o toca una imagen aquí',
+    sections: {
+      strengths:{
+        title:'💪 Mis Fortalezas',
+        prompt:"¿En qué eres bueno/a? ¡Arrastra o toca una imagen, luego toca un recuadro!",
+        zones:['🏫 En la Escuela','🏠 En Casa','❤️ Dentro de Mí','👫 Con Otros']
+      },
+      supports:{
+        title:'🤝 ¿Quién Me Ayuda?',
+        prompt:"¿Quiénes son las personas que te ayudan? ¡Arrastra o toca una imagen!",
+        zones:['👨‍👩‍👧 Familia','👫 Amigos','🏫 Escuela','🏙️ Comunidad']
+      },
+      preferences:{
+        title:'👍 Me Gusta / No Me Gusta',
+        prompt:"¿Qué te gusta? ¿Qué no te gusta? ¡Arrastra o toca una imagen!",
+        zones:['😊 Me Gusta','😕 No Me Gusta']
+      },
+      me:{
+        title:'🧒 Todo Sobre Mí',
+        prompt:'¡Cuéntanos sobre ti! Arrastra o toca imágenes en los recuadros.',
+        zones:['⭐ Me Gusta','📋 Necesito','😊 Me Siento']
+      },
+      iep:{
+        title:'⭐ Mi Equipo',
+        prompt:'¿Quién está en tu equipo? ¡Arrastra o toca personas en los recuadros!',
+        zones:['🏫 Mi Equipo Escolar','🏠 Mi Equipo en Casa','🏙️ Mi Equipo Comunitario']
+      },
+      goals:{
+        title:'🌈 Mi Meta',
+        prompt:'¿Qué quieres hacer? ¡Arrastra o toca imágenes para mostrar tu meta!',
+        zones:['🌈 Quiero','🤝 Quién Me Ayuda','📅 Cuándo']
+      },
+      communication:{
+        title:'💬 Cómo Me Siento',
+        prompt:'¿Cómo te sientes? ¿Cómo se lo muestras a otros? ¡Arrastra o toca!',
+        zones:['❤️ Me Siento','💬 Lo Muestro','✋ Necesito']
+      },
+      food:{
+        title:'🍽️ Comida que Me Gusta',
+        prompt:"¿Qué comida te gusta? ¿Cuál no? ¡Arrastra o toca!",
+        zones:['😋 Me Gusta Esta Comida','🙅 No Me Gusta Esta','🍽️ Quiero Esto Ahora']
+      },
+      dream:{
+        title:'🚀 Mi Trabajo Soñado',
+        prompt:'¿Qué trabajo te encantaría tener? ¡Arrastra o toca una imagen!',
+        zones:['🚀 Mi Trabajo Soñado','❤️ Me Gusta Porque']
+      },
+    },
+    modalAdd:      '🔒 Agregar un Estudiante',
+    modalFirst:    '👋 ¡Bienvenido/a! Agrega tu Primer Estudiante',
+    ferpaNote:     '<strong>Aviso FERPA:</strong> No ingrese el nombre real del estudiante. Use un seudónimo, código o número de identificación para proteger su privacidad.',
+    optPseudo:     'Seudónimo',
+    optId:         'ID del Estudiante',
+    optInitials:   'Iniciales + #',
+    optExPseudo:   'ej. PájaroRojo',
+    optExId:       'ej. Caso-42',
+    optExInitials: 'ej. K.S.#3',
+    lblPseudo:     'Ingresa un seudónimo:',
+    lblId:         'Ingresa un ID o número de caso:',
+    lblInitials:   'Ingresa iniciales + número:',
+    phPseudo:      'ej. PájaroRojo, Solecito, Mesa3A',
+    phId:          'ej. 10234, SLP-07, Caso-42',
+    phInitials:    'ej. K.S.#3, A.B.-2, J.T.04',
+    btnCancel:     'Cancelar',
+    btnAddStu:     '✅ Agregar Estudiante',
+    photoTitle:    '📷 Agregar una Foto',
+    photoDzText:   'Haz clic para elegir una foto, o arrástrala aquí',
+    photoDzSub:    'JPG, PNG, GIF, WebP — se redimensiona automáticamente',
+    photoLbl:      'Nombre esta imagen (requerido):',
+    photoPh:       'ej. Sra. García, Dr. Patel, Pastor Miguel',
+    photoCancel:   'Cancelar',
+    photoSave:     '💾 Guardar Foto',
+    manageTitle:   '📷 Mis Fotos',
+    manageNote:    'Las fotos se comparten entre todos los estudiantes en este dispositivo. Al eliminar una foto, desaparece del banco; si algún estudiante la tenía colocada, verá un marcador en su lugar.',
+    manageEmpty:   'Aún no hay fotos.<br>Usa el botón 📷 en cualquier banco de imágenes para agregar una.',
+    manageDone:    'Listo',
+    trashLbl:      '🗑️ Suelta aquí para eliminar',
+    addPhotoLbl:   'Agregar\nFoto',
+    printStrip:    'Habilidades de Transición Temprana – ¡COMIENZA YA!',
+    arasaacBar:    'Símbolos pictográficos © Gobierno de Aragón / Sergio Palao para ARASAAC (arasaac.org) · CC BY-NC-SA',
+  },
+
+  vi: {
+    stuLabel:    '👤 Học sinh:',
+    btnNew:      '＋ Thêm mới',
+    btnRen:      '✏️ Đổi tên',
+    btnDel:      '🗑️ Xóa',
+    speechOff:   'Đọc: Tắt',
+    speechOn:    'Đọc: Bật',
+    myPhotos:    'Ảnh của tôi',
+    printAll:    'In tất cả',
+    coverSub:    '👆 Chạm hoặc kéo hình ảnh để trả lời!',
+    coverSections: {
+      strengths:    ['💪','Điểm mạnh của tôi'],
+      supports:     ['🤝','Ai giúp tôi?'],
+      preferences:  ['👍','Tôi thích / Không thích'],
+      me:           ['🧒','Tất cả về tôi'],
+      iep:          ['⭐','Nhóm của tôi'],
+      goals:        ['🌈','Mục tiêu của tôi'],
+      communication:['💬','Tôi cảm thấy thế nào'],
+      food:         ['🍽️','Thức ăn tôi thích'],
+      dream:        ['🚀','Nghề nghiệp mơ ước'],
+    },
+    ccTap: '👆 Chạm',
+    backBtn:  '← Quay lại',
+    searchPh: '🔍 Tìm thêm hình ảnh…',
+    searchBtn:'Tìm kiếm',
+    clearBtn: '🔄 Xóa trang',
+    bankLbl:  '🖼️ Chọn một hình — chạm để chọn, rồi chạm vào ô:',
+    loading:  '⏳ Đang tải hình ảnh…',
+    dzPh:     'Kéo hoặc chạm vào hình ảnh để đặt vào đây',
+    sections: {
+      strengths:{
+        title:'💪 Điểm mạnh của tôi',
+        prompt:"Bạn giỏi điều gì? Kéo hoặc chạm vào hình, rồi chạm vào ô!",
+        zones:['🏫 Ở trường','🏠 Ở nhà','❤️ Bên trong tôi','👫 Với người khác']
+      },
+      supports:{
+        title:'🤝 Ai giúp tôi?',
+        prompt:"Ai là người giúp đỡ bạn? Kéo hoặc chạm vào hình vào ô!",
+        zones:['👨‍👩‍👧 Gia đình','👫 Bạn bè','🏫 Trường học','🏙️ Cộng đồng']
+      },
+      preferences:{
+        title:'👍 Tôi thích / Không thích',
+        prompt:"Bạn thích gì? Bạn không thích gì? Kéo hoặc chạm vào hình!",
+        zones:['😊 Tôi thích','😕 Tôi không thích']
+      },
+      me:{
+        title:'🧒 Tất cả về tôi',
+        prompt:'Hãy kể về bản thân bạn! Kéo hoặc chạm hình vào các ô.',
+        zones:['⭐ Tôi thích','📋 Tôi cần','😊 Tôi cảm thấy']
+      },
+      iep:{
+        title:'⭐ Nhóm của tôi',
+        prompt:'Ai ở trong nhóm của bạn? Kéo hoặc chạm hình người vào ô!',
+        zones:['🏫 Nhóm ở trường','🏠 Nhóm ở nhà','🏙️ Nhóm cộng đồng']
+      },
+      goals:{
+        title:'🌈 Mục tiêu của tôi',
+        prompt:'Bạn muốn làm gì? Kéo hoặc chạm hình để thể hiện mục tiêu!',
+        zones:['🌈 Tôi muốn','🤝 Ai giúp tôi','📅 Khi nào']
+      },
+      communication:{
+        title:'💬 Tôi cảm thấy thế nào',
+        prompt:'Bạn cảm thấy thế nào? Bạn thể hiện cảm xúc ra sao? Kéo hoặc chạm!',
+        zones:['❤️ Tôi cảm thấy','💬 Tôi thể hiện bằng','✋ Tôi cần']
+      },
+      food:{
+        title:'🍽️ Thức ăn tôi thích',
+        prompt:"Bạn thích ăn gì? Bạn không thích ăn gì? Kéo hoặc chạm!",
+        zones:['😋 Tôi thích món này','🙅 Tôi không thích','🍽️ Tôi muốn ăn ngay bây giờ']
+      },
+      dream:{
+        title:'🚀 Nghề nghiệp mơ ước',
+        prompt:'Bạn muốn làm nghề gì? Kéo hoặc chạm vào hình nghề nghiệp!',
+        zones:['🚀 Nghề nghiệp mơ ước','❤️ Tôi thích vì']
+      },
+    },
+    modalAdd:      '🔒 Thêm học sinh',
+    modalFirst:    '👋 Chào mừng! Thêm học sinh đầu tiên',
+    ferpaNote:     '<strong>Nhắc nhở FERPA:</strong> Không nhập tên thật của học sinh. Hãy dùng tên giả, mã số hoặc số ID để bảo vệ quyền riêng tư.',
+    optPseudo:     'Tên giả',
+    optId:         'Mã học sinh',
+    optInitials:   'Chữ viết tắt + số',
+    optExPseudo:   'vd. ChimĐỏ',
+    optExId:       'vd. Ca-42',
+    optExInitials: 'vd. N.V.#3',
+    lblPseudo:     'Nhập tên giả:',
+    lblId:         'Nhập mã học sinh hoặc số hồ sơ:',
+    lblInitials:   'Nhập chữ viết tắt + số:',
+    phPseudo:      'vd. ChimĐỏ, MặtTrời, Bàn3A',
+    phId:          'vd. 10234, SLP-07, Ca-42',
+    phInitials:    'vd. N.V.#3, T.T.-2, H.N.04',
+    btnCancel:     'Hủy',
+    btnAddStu:     '✅ Thêm học sinh',
+    photoTitle:    '📷 Thêm ảnh',
+    photoDzText:   'Nhấn để chọn ảnh, hoặc kéo ảnh vào đây',
+    photoDzSub:    'JPG, PNG, GIF, WebP — tự động điều chỉnh kích thước',
+    photoLbl:      'Đặt tên cho ảnh này (bắt buộc):',
+    photoPh:       'vd. Cô Garcia, Bác sĩ Patel, Mục sư Minh',
+    photoCancel:   'Hủy',
+    photoSave:     '💾 Lưu ảnh',
+    manageTitle:   '📷 Ảnh của tôi',
+    manageNote:    'Ảnh được chia sẻ cho tất cả học sinh trên thiết bị này — tải lên một lần, dùng cho mọi học sinh. Xóa ảnh sẽ xóa khỏi ngân hàng hình; học sinh nào đã đặt ảnh đó sẽ thấy ký hiệu thay thế.',
+    manageEmpty:   'Chưa có ảnh nào.<br>Dùng nút 📷 trong ngân hàng hình để thêm ảnh.',
+    manageDone:    'Xong',
+    trashLbl:      '🗑️ Thả vào đây để xóa',
+    addPhotoLbl:   'Thêm\nẢnh',
+    printStrip:    'Kỹ Năng Chuyển Tiếp Sớm – BẮT ĐẦU NGAY!',
+    arasaacBar:    'Ký hiệu hình ảnh © Chính quyền Aragón / Sergio Palao cho ARASAAC (arasaac.org) · CC BY-NC-SA',
+  }
+};
+
+function t(key){ return LANG[_lang][key] || LANG.en[key] || key; }
+function tSec(secKey, prop){ return (LANG[_lang].sections[secKey]||LANG.en.sections[secKey])[prop]; }
+
+function setLang(lang){
+  _lang = lang;
+  localStorage.setItem('aac_lang', lang);
+  // Toggle active state
+  document.getElementById('lang-en').classList.toggle('active', lang==='en');
+  document.getElementById('lang-es').classList.toggle('active', lang==='es');
+  document.getElementById('lang-vi').classList.toggle('active', lang==='vi');
+  // Vietnamese font override via body class
+  document.body.classList.toggle('lang-vi', lang==='vi');
+  // Update speech engine language
+  SPEECH._v = null;
+  SPEECH._lang = lang==='es' ? 'es-US' : lang==='vi' ? 'vi-VN' : 'en-US';
+  applyLang();
+}
+
+function applyLang(){
+  const L = LANG[_lang];
+  // Toolbar
+  const sl=document.getElementById('tb-stu-label'); if(sl) sl.textContent=L.stuLabel;
+  const bn=document.getElementById('tb-btn-new');   if(bn) bn.textContent=L.btnNew;
+  const br=document.getElementById('tb-btn-ren');   if(br) br.textContent=L.btnRen;
+  const bd=document.getElementById('tb-btn-del');   if(bd) bd.textContent=L.btnDel;
+  const sp=document.getElementById('tb-speech-lbl');if(sp) sp.textContent=SPEECH.on?L.speechOn:L.speechOff;
+  const ph=document.getElementById('tb-photos-lbl');if(ph) ph.textContent=L.myPhotos;
+  const pr=document.getElementById('tb-print-lbl'); if(pr) pr.textContent=L.printAll;
+  // Cover subtitle
+  const cs=document.querySelector('.cover-sub h2'); if(cs) cs.textContent=L.coverSub;
+  // Cover grid cells
+  document.querySelectorAll('.cover-cell[data-seckey]').forEach(cell=>{
+    const key=cell.dataset.seckey;
+    const [emoji,lbl]=L.coverSections[key]||['',''];
+    const eEl=cell.querySelector('.cc-emoji'); if(eEl) eEl.textContent=emoji;
+    const lEl=cell.querySelector('.cc-lbl');   if(lEl) lEl.textContent=lbl;
+    const tEl=cell.querySelector('.cc-tap');   if(tEl) tEl.textContent=L.ccTap;
+  });
+  // Section pages — titles, prompts, zone labels, bank label, search, placeholders
+  Object.keys(PAGES).forEach(key=>{
+    const sec=document.getElementById('aac-sec-'+key); if(!sec) return;
+    const sd=L.sections[key]; if(!sd) return;
+    const titleEl=sec.querySelector('.page-title');  if(titleEl) titleEl.textContent=sd.title;
+    const promptEl=sec.querySelector('.page-prompt'); if(promptEl) promptEl.textContent=sd.prompt;
+    const backEl=sec.querySelector('.back-btn');      if(backEl) backEl.textContent=L.backBtn;
+    const secInd=sec.querySelector('.sec-indicator'); if(secInd) secInd.textContent=sd.title;
+    const blEl=sec.querySelector('.bank-label');      if(blEl) blEl.textContent=L.bankLbl;
+    const srch=sec.querySelector('.sym-search');      if(srch) srch.placeholder=L.searchPh;
+    const sBtn=sec.querySelector('.search-btn');      if(sBtn) sBtn.textContent=L.searchBtn;
+    const cBtn=sec.querySelector('.clear-btn');       if(cBtn) cBtn.textContent=L.clearBtn;
+    // Add photo button
+    sec.querySelectorAll('.add-photo-btn .ap-lbl').forEach(el=>el.textContent=L.addPhotoLbl.replace('\n',' '));
+    // Drop zone labels + placeholders
+    const zones=sec.querySelectorAll('.drop-zone');
+    zones.forEach((z,i)=>{
+      const lblEl=z.querySelector('.dz-lbl'); if(lblEl&&sd.zones[i]) lblEl.textContent=sd.zones[i];
+      const phEl=z.querySelector('.dz-ph');   if(phEl) phEl.textContent=L.dzPh;
+    });
+    // ARASAAC bar
+    const ab=sec.querySelector('.arasaac-bar'); if(ab) ab.textContent=L.arasaacBar;
+  });
+  // Photo upload modal
+  const pmTitle=document.getElementById('photo-modal-title'); if(pmTitle) pmTitle.textContent=L.photoTitle;
+  const pdText=document.querySelector('.pdz-text');  if(pdText) pdText.textContent=L.photoDzText;
+  const pdSub=document.querySelector('.pdz-sub');    if(pdSub)  pdSub.textContent=L.photoDzSub;
+  const plLbl=document.querySelector('.photo-label-field label'); if(plLbl) plLbl.textContent=L.photoLbl;
+  const plInp=document.getElementById('photo-label-input'); if(plInp) plInp.placeholder=L.photoPh;
+  const pmCan=document.querySelector('.pm-cancel'
